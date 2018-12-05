@@ -20,7 +20,7 @@
 
                 <!--Navbar Dropdown-->
                 <!--================================-->
-                <div class="navbar-content">
+                <div class="navbar-content" style="background-color:#0b1521">
                     <ul class="nav navbar-top-links">
 
                         <!--Navigation toogle button-->

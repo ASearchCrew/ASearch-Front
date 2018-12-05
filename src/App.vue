@@ -2,11 +2,9 @@
   <div id="container" class="effect aside-float aside-bright mainnav-sm page-fixedbar">
     <my-header></my-header>
     <div class="boxed">
-      <div id="content-container">
-        <log-view-head></log-view-head>
-        <fixedbar></fixedbar>
-        <log-view-content></log-view-content>
-      </div>
+
+      <router-view></router-view>
+
       <main-nav></main-nav>
     </div>
     <my-footer></my-footer>
@@ -14,20 +12,14 @@
 </template>
 
 <script>
-import MyHeader from './components/Header.vue'
-import LogViewHead from './components/LogViewHead.vue'
-import Fixedbar from './components/Fixedbar.vue'
-import LogViewContent from './components/LogViewContent.vue'
-import MainNav from './components/MainNav.vue'
-import MyFooter from './components/Footer.vue'
+import MyHeader from './shared-components/Header.vue'
+import MainNav from './shared-components/MainNav.vue'
+import MyFooter from './shared-components/Footer.vue'
 
 export default {
   name: 'app',
   components: {
     MyHeader,
-    LogViewHead,
-    Fixedbar,
-    LogViewContent,
     MainNav,
     MyFooter
   }
