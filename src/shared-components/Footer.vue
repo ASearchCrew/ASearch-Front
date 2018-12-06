@@ -1,7 +1,7 @@
 <template>
     <!-- FOOTER -->
     <!--===================================================-->
-    <footer id="footer">
+    <footer id="footer" style="background-color:#0b1521">
 
         <!-- Visible when footer positions are fixed -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -34,7 +34,7 @@
 
 <script>
 export default {
-    
+
 }
 </script>
 
