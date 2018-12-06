@@ -39,6 +39,9 @@ export default {
 </script>
 
 <style scoped>
+#footer {
+    background-color: #0b1521;
+}
 #footer p {
     text-align: center;
 }
