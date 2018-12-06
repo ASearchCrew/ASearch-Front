@@ -1,5 +1,5 @@
 <template>
-  <div id="container" class="effect aside-float aside-bright mainnav-sm page-fixedbar">
+  <div id="container" class="effect aside-float aside-bright mainnav-sm page-fixedbar" style="background-color:#0b1521">
     <my-header></my-header>
     <div class="boxed">
 
