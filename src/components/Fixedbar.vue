@@ -77,6 +77,11 @@ export default {
 </script>
 
 
-<style>
-
+<style scoped>
+.nano-content {
+    background-color: #344146;
+}
+.page-fixedbar-content>.nano{
+    background-color: #344146;
+}
 </style>

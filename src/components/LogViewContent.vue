@@ -22,7 +22,7 @@
                         @before-enter="beforeEnter"
                         @enter="enter"
                         @leave="leave">
-                        <div v-for="(post) in computedList" style="height:auto" :key="post.id" @mouseover="test" @mouseout="testOut"  class="eBjuvI">
+                        <div v-for="(post) in computedList" style="height:auto" :key="post.id" @mouseover="mouseInCell" @mouseout="mouseOutCell"  class="eBjuvI">
                             <div class="iMKTAC" scale="medium">{{ post.title }}</div>
                             <div class="jyzsZJ" scale="medium">{{ post.body }}</div>
                         </div>
@@ -66,18 +66,21 @@ export default {
       return this.query.length > 0
     }
   },
-  created() {
+  mounted() {
     // 초기 로그 요청
-    this.searchTerm()
+    this.searchTerm();
+    this.startStream();
     // Stream 버튼 클릭 시 스트리밍 실행 / 정지
     this.$EventBus.$on('stream', function(isClicked) {
       this.isClicked = isClicked
       console.log(this.isClicked)
       this.isClicked ? this.startStream() : this.stopStream()
-    }.bind(this))
+    }.bind(this));
+    this.scrollToEnd();
+    this.$EventBus.$on('searchKeyword', this.onReceive);
   },
-  mounted() {
-    this.$EventBus.$on('searchKeyword', this.onReceive)
+  updated() {
+    this.scrollToEnd();
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -112,7 +115,6 @@ export default {
           // this.posts.push(result.data)
           // count = count + 1
         })
-
     },
     startStream: function() {
       this.interval = setInterval(this.searchTerm, 3000)
@@ -122,6 +124,11 @@ export default {
     },
     onReceive(text) {
       this.query = text
+    },
+    scrollToEnd() {
+      var container = document.querySelector(".cSbckb");
+      var scrollHeight = container.scrollHeight;
+      container.scrollTop = scrollHeight;
     },
     beforeEnter: function(el) {
       el.style.opacity = 0
@@ -176,7 +183,7 @@ export default {
     overflow-x: hidden;
     overflow-y: scroll;
     position: relative;
-    padding-right: 20px;
+    /* padding-right: 20px; */
 }
 
 .cSbckb * {

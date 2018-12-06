@@ -2,6 +2,37 @@
     <div id="page-head">
         <div class="sub-navbar">
             <div class="euiFlexGroup euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
+                <div class="euiFlexItem " >
+                    <input type="text" id="search" class="form-control" placeholder="Search for..." @keyup="sendQuery">
+                </div>
+                <div class="euiFlexItem euiFlexItem--flexGrowZero">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Customize <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="euiFlexItem euiFlexItem--flexGrowZero">
+                    <div id="picker"> </div>
+                    <input type="hidden" id="result" value="">
+                </div>
+                <div class="euiFlexItem euiFlexItem--flexGrowZero">
+                    <button v-if="isClicked" type="button" class="btn btn-danger" @click="streamBtnClick">Stop Stream</button>
+                    <button v-else type="button" class="btn btn-success" @click="streamBtnClick">Stream Live</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div id="page-head">
+        <div class="sub-navbar">
+            <div class="euiFlexGroup euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
                 <div class="euiFlexItem" >
                     <el-input
                         id="search"
@@ -35,7 +66,7 @@
                 </div>
         </div>
       </div>
-    </div>
+    </div> -->
 </template>
 
 <script>
@@ -43,7 +74,7 @@ export default {
     data() {
         return {
             query: '',
-            isClicked: false,
+            isClicked: true,
             time: '',
             url: '',
             radioOption: '4',
@@ -55,12 +86,17 @@ export default {
                 { key: '5', name: '1 Hour' },
                 { key: '6', name: '1 Minute' }
             ],
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now()
-                }
-            },
+            date: new Date(),
+            options: {
+                format: 'DD/MM/YYYY h:mm:ss',
+                useCurrent: false,
+                showClear: true,
+                showClose: true,
+            }
         }
+    },
+    mounted() {
+        $('#picker').dateTimePicker();
     },
     methods: {
         streamBtnClick: function() {
@@ -78,6 +114,21 @@ export default {
 </script>
 
 <style scoped>
+.my-navbar {
+    margin: 0;
+    border: none;
+}
+
+.container-fluid {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.nav-el {
+    padding-right: 5px;
+    display: inline;
+}
+
 /* test */
 .euiFlexGroup {
     display: -webkit-box;
@@ -89,6 +140,7 @@ export default {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
     flex-grow: 1;
+    padding-top: 7px;
 }
 
 .euiFlexGroup--justifyContentSpaceBetween {
@@ -147,7 +199,7 @@ export default {
     -webkit-transition: 600ms ease position;
     transition: 600ms ease position;
     background: -webkit-gradient(linear, left top, right top, from(#20b6f9), color-stop(0%, #20b6f9), color-stop(100%, #2178f1), to(#2178f1));
-    background: linear-gradient(90deg, #20b6f9 0%, #20b6f9 0%, #2178f1 100%, #2178f1 100%);
+    background: linear-gradient(90deg, rgb(64, 81, 87) 0%, rgb(64, 81, 87) 0%, #344146 100%, #344146 100%);
 }
 
 </style>
