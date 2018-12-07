@@ -10,6 +10,12 @@
                         <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 2</a>
                         <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> SERVER 3</a>
                         <a href="#" class="list-group-item"><i class="demo-pli-support icon-lg icon-fw"></i> SERVER 4</a>
+                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> SERVER 5</a>
+                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 6</a>
+                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> SERVER 7</a>
+                        <a href="#" class="list-group-item"><i class="demo-pli-support icon-lg icon-fw"></i> SERVER 8</a>
+                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> SERVER 9</a>
+                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 10</a>
                     </div>
 
                     <hr>
@@ -78,10 +84,5 @@ export default {
 
 
 <style scoped>
-.nano-content {
-    background-color: #344146;
-}
-.page-fixedbar-content>.nano{
-    background-color: #344146;
-}
+
 </style>
