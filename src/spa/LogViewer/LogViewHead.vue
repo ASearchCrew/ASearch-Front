@@ -11,11 +11,22 @@
                             Customize <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
+                            <form>
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio" checked>Option 1</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio">Option 2</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="optradio">Option 3</label>
+                                </div>
+                            </form>
+                            <!-- <li><a href="#">Action</a></li>
                             <li><a href="#">Another action</a></li>
                             <li><a href="#">Something else here</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">Separated link</a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -198,8 +209,16 @@ export default {
     padding-right: 20px;
     -webkit-transition: 600ms ease position;
     transition: 600ms ease position;
-    background: -webkit-gradient(linear, left top, right top, from(#20b6f9), color-stop(0%, #20b6f9), color-stop(100%, #2178f1), to(#2178f1));
-    background: linear-gradient(90deg, rgb(64, 81, 87) 0%, rgb(64, 81, 87) 0%, #344146 100%, #344146 100%);
+    /* background: -webkit-gradient(linear, left top, right top, from(#20b6f9), color-stop(0%, #20b6f9), color-stop(100%, #2178f1), to(#2178f1));
+    background: linear-gradient(90deg, rgb(64, 81, 87) 0%, rgb(64, 81, 87) 0%, #344146 100%, #344146 100%); */
+}
+
+.radio label {
+    padding-left: 40px;
+}
+
+.radio label input {
+    position: relative;
 }
 
 </style>

@@ -13,7 +13,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="cSbckb" style="height: 825px; width: 100%;">
+                <div class="cSbckb" style="height: 820px; width: 100%;">
                     <transition-group
                         v-if="hasResult"
                         :css="false"
@@ -22,17 +22,29 @@
                         @before-enter="beforeEnter"
                         @enter="enter"
                         @leave="leave">
-                        <div v-for="(post) in computedList" style="height:auto" :key="post.id" @mouseover="mouseInCell" @mouseout="mouseOutCell"  class="eBjuvI">
-                            <div class="iMKTAC" scale="medium">{{ post.title }}</div>
-                            <div class="jyzsZJ" scale="medium">{{ post.body }}</div>
+                        <div v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                            <div class="timeline-time-custom" scale="medium">{{ result.timestamp }}</div>
+                            <div class="timeline-icon-custom"><a href="#"></a></div>
+                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
                         </div>
 
                     </transition-group>
-                    <transition-group v-else name="list" tag="div">
-                        <div v-for="(post) in posts" style="height:auto" :key="post.id" @mouseover="mouseInCell" @mouseout="mouseOutCell" class="eBjuvI">
+
+
+                    
+                    <transition-group v-else name="list" tag="ul" class="timeline-custom">
+                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                            <!-- <div class="timeline-time-custom" scale="medium">{{ result.timestamp }}</div> -->
+                            <div class="timeline-time-custom" scale="medium">{{ result.title }}</div>
+                            <div class="timeline-icon-custom"><a href="#"></a></div>
+                            <!-- <div class="timeline-body-custom" scale="medium">{{ result.message }}</div> -->
+                            <div class="timeline-body-custom" scale="medium">{{ result.body }}</div>
+                        </li>
+
+                        <!-- <div v-for="(post) in posts" style="height:auto" :key="post.id" @mouseover="mouseInCell" @mouseout="mouseOutCell" class="eBjuvI">
                             <div class="iMKTAC" scale="medium">{{ post.title }}</div>
                             <div class="jyzsZJ" scale="medium">{{ post.body }}</div>
-                        </div>
+                        </div> -->
                     </transition-group>
                 </div>
             </div>
@@ -44,11 +56,11 @@
 
 <script>
 export default {
-    data() {
+  data() {
     return {
-      count: 0,
+      offset: 0,
       query: '',
-      posts: [],
+      results: [],
       isClicked: false,
       interval: null,
       computedList:null
@@ -88,30 +100,34 @@ export default {
   },
   methods: {
     mouseInCell(event){
-      // console.log(event.currentTarget.childNodes)
-      event.currentTarget.childNodes[0].style.backgroundColor='#fffddb';
-      event.currentTarget.childNodes[0].style.borderRight='2px solid #fffaad';
-      event.currentTarget.childNodes[1].style.backgroundColor='#fffddb';
+      console.log(event.currentTarget.childNodes)
+      event.currentTarget.childNodes[0].style.fontWeight="bold";
+      event.currentTarget.childNodes[2].style.fontWeight="bold";
+      
+      event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
+      event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
     },
     mouseOutCell(event){
-      event.currentTarget.childNodes[0].style.backgroundColor='';
-      event.currentTarget.childNodes[0].style.borderRight='';
-      event.currentTarget.childNodes[1].style.backgroundColor='';
+      event.currentTarget.childNodes[0].style.fontWeight='';
+      event.currentTarget.childNodes[2].style.fontWeight='';
+      
+      event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='';
+      event.currentTarget.childNodes[2].style.backgroundColor='';
     },
     searchTerm: function() {
       // using JSONPlaceholder
       const baseURI = 'https://jsonplaceholder.typicode.com'
       this.$http.get(`${baseURI}/posts`)
       // const baseURI = 'http://52.79.220.131:8080';
-      // this.$http.get(`${baseURI}/api/v1/log?offset=${this.count}`)
+      // this.$http.get(`${baseURI}/api/v1/log?offset=${this.offset}`)
         .then((result) => {
           console.log(result)
-          this.posts = result.data
-
-          this.computedList = this.posts.filter((item) => {
-            // console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
-            return item.body.toLowerCase().indexOf(this.query.toLowerCase()) !== -1 // body 부분 수정필요!!
-          })
+          this.results = result.data
+          // this.offset = this.offset + 1
+          // this.computedList = this.posts.filter((item) => {
+          //   // console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
+          //   return item.body.toLowerCase().indexOf(this.query.toLowerCase()) !== -1 // body 부분 수정필요!!
+          // })
           // this.posts.push(result.data)
           // count = count + 1
         })
@@ -168,7 +184,7 @@ export default {
 .msIpy {
     display: flex;
     flex-direction: row;
-    background-color: rgb(255, 255, 255);
+    /* background-color: rgb(255, 255, 255); */
     flex: 1 0 0%;
 }
 
@@ -206,10 +222,6 @@ export default {
     align-items: stretch;
     overflow: hidden;
     cursor:pointer;
-}
-
-#a:hover {
-    background-color: green;
 }
 
 .iMKTAC {
@@ -250,4 +262,86 @@ export default {
 #page-content {
     padding: 0;
 }
+
+
+/* ----------------------------------------------- */
+.timeline-custom {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.timeline-custom>li {
+    position: relative;
+    min-height: 50px;
+    padding: 20px 0;
+}
+
+.timeline-custom .timeline-time-custom {
+    position: absolute;
+    left: 0;
+    width: 18%;
+    text-align: right;
+    top: 30px;
+}
+
+.timeline-custom .timeline-icon-custom {
+    left: 15%;
+    position: absolute;
+    width: 10%;
+    text-align: center;
+    top: 40px;
+}
+
+.timeline-custom .timeline-icon-custom a {
+    text-decoration: none;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 20px;
+    background: #d9e0e7;
+    line-height: 10px;
+    color: #fff;
+    font-size: 14px;
+    border: 5px solid #2d353c;
+    transition: border-color .2s linear;
+}
+
+.timeline-custom .timeline-body-custom {
+    margin-left: 23%;
+    margin-right: 3%;
+    background: #fff;
+    position: relative;
+    padding: 20px 25px;
+    border-radius: 6px;
+}
+
+.timeline-custom .timeline-body-custom:before {
+    content: '';
+    display: block;
+    position: absolute;
+    border: 10px solid transparent;
+    border-right-color: #fff;
+    left: -20px;
+    top: 20px;
+}
+
+
+
+.timeline-custom:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 5px;
+  background: #2d353c;
+  left: 20%;
+  margin-left: -2.5px;
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
 </style>
