@@ -163,11 +163,7 @@ export default {
     name: 'Header'
 }
 </script>
-<<<<<<< HEAD
-=======
-
 
 <style scoped>
 
 </style>
->>>>>>> 4aa82bbcc6cd66102407f2d224fbdd60526f6af6
