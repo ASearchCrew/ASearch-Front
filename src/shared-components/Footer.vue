@@ -1,7 +1,7 @@
 <template>
     <!-- FOOTER -->
     <!--===================================================-->
-    <footer id="footer" style="background-color:#0b1521">
+    <footer id="footer">
 
         <!-- Visible when footer positions are fixed -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -39,9 +39,6 @@ export default {
 </script>
 
 <style scoped>
-#footer {
-    background-color: #0b1521;
-}
 #footer p {
     text-align: center;
 }
