@@ -20,7 +20,7 @@
 
                 <!--Navbar Dropdown-->
                 <!--================================-->
-                <div class="navbar-content" style="background-color:#0b1521">
+                <div class="navbar-content">
                     <ul class="nav navbar-top-links">
 
                         <!--Navigation toogle button-->
@@ -163,13 +163,3 @@ export default {
     name: 'Header'
 }
 </script>
-
-
-<style scoped>
-.navbar-content {
-    background-color: #0b1521;
-}
-/* .brand-title {
-    background-color: #0b1521;
-} */
-</style>

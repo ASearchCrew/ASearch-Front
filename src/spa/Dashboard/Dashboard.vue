@@ -1,401 +1,422 @@
 <template>
   <!--Page content-->
   <!--===================================================-->
+<div id="content-container" style="background-color: #0b1521;">
+  <div class="fluid faq-accordion">
 
-    <div class="panelCustom" style="padding:70px;>
-      <div class="">
-              <div class="fluid faq-accordion">
+        <!-- GENERAL -->
+        <!--===================================================-->
+        <div class="panelCustom">
+          <div class="panel-heading">
+            <p class="panel-title"><i @click="click1=!click1" href="#toggleDiv-1" data-toggle="collapse" v-bind:class="[ click1 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]"></i>&nbsp; WEB</p>
+          </div>
 
-                  <!-- GENERAL -->
-                  <!--===================================================-->
-                  <div class="panelCustom">
-                      <div class="panel-heading" @click="clickItemBtn1" href="#toggleDiv-1" data-toggle="collapse">
-                          <p class="panel-title">
-                            <p v-if="click1" class="panel-title"><i class="fa fa-minus-square"></i> WEB</p>
-                            <p v-else="click1" class="panel-title"><i class="fa fa-plus-square"></i> WEB</p>
-                          </p>
+          <div class="panel-collapse collapse in" id="toggleDiv-1" style="padding-left:40px;">
+            <div class="row">
+                <div class="col-md-9" style="width:1220px; ">
+                  <div class="ht-event-btns">
+
+                        <div class="ht-event-btn stl1">
+                          <router-link to="/logViewer">
+                          <div class="flag">
+                              <span>Server 1</span>
+                          </div>
+                          <p>File beat</p>
+                          <div class="subH">
+                            <p>file live flow sdfsli sdf</p>
+                          </div>
+                          <div class="loader loading"></div>
+                        </router-link>
+
+                        </div>
+
+                      <div class="ht-event-btn stl2">
+                        <div class="flag">
+                            <span>Server 2</span>
+                        </div>
+                        <p>Elastic search</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
                       </div>
 
-                      <div class="panel-collapse collapse in" id="toggleDiv-1" style="padding-left:40px;">
-                        <div class="row">
-                          <div class="col-md-9" style="width:1220px; ">
-                            <div class="ht-event-btns">
-
-                                  <div class="ht-event-btn stl1">
-                                    <router-link to="/logViewer">
-                                    <div class="logo">
-                                        <span>Server 1</span>
-                                    </div>
-                                    <p>File beat</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </router-link>
-
-                                  </div>
-
-                                <div class="ht-event-btn stl2">
-                                  <div class="logo">
-                                      <span>Server 2</span>
-                                  </div>
-                                  <p>Elastic search</p>
-                                  <div class="subH">
-                                    <p>file live flow sdfsli sdf</p>
-                                  </div>
-                                  <div class="loader loading"></div>
-                                </div>
-
-                                <div class="ht-event-btn stl3" >
-                                  <div class="logo">
-                                      <span>Server 3</span>
-                                  </div>
-                                  <p>Logstash</p>
-                                  <div class="subH">
-                                    <p>file live flow sdfsli sdf</p>
-                                  </div>
-                                  <div class="loader loading"></div>
-                                </div>
-
-                                <div class="ht-event-btn stl4">
-                                  <div class="logo">
-                                      <span>Server 4</span>
-                                  </div>
-                                  <p>Kibana</p>
-                                  <div class="subH">
-                                    <p>file live flow sdfsli sdf</p>
-                                  </div>
-                                  <div class="loader loading"></div>
-                                </div>
-
-                                <div class="ht-event-btn stl5">
-                                  <div class="logo">
-                                      <span>Server 5</span>
-                                  </div>
-                                  <p>Kafka</p>
-                                  <div class="subH">
-                                    <p>file live flow sdfsli sdf</p>
-                                  </div>
-                                  <div class="loader loading"></div>
-                                </div>
-
-                              </div> <!--ht-event-btns end-->
-                            <div class="ht-event-btns">
-                              <div class="ht-event-btn stl5">
-                                <div class="logo">
-                                    <span>Server 5</span>
-                                </div>
-                                <p>File beat</p>
-                                <div class="subH">
-                                  <p>file live flow sdfsli sdf</p>
-                                </div>
-                                <div class="loader loading"></div>
-                              </div>
-
-                              <div class="ht-event-btn">
-                                <div class="logo">
-                                    <span>Server 6</span>
-                                </div>
-                                <p>Elastic search</p>
-                                <div class="subH dead">
-                                  <p>file live flow sdfsli sdf</p>
-                                </div>
-                                <div class="loader loading dead"></div>
-                              </div>
-
-                              <div class="ht-event-btn stl7" >
-                                <div class="logo">
-                                    <span>Server 7</span>
-                                </div>
-                                <p>Logstash</p>
-                                <div class="subH">
-                                  <p>file live flow sdfsli sdf</p>
-                                </div>
-                                <div class="loader loading"></div>
-                              </div>
-
-                              <div class="ht-event-btn">
-                                <div class="logo">
-                                    <span>Server 8</span>
-                                </div>
-                                <p>Kibana</p>
-                                <div class="subH dead">
-                                  <p>file live flow sdfsli sdf</p>
-                                </div>
-                                <div class="loader loading dead"></div>
-                              </div>
-
-                              <div class="ht-event-btn">
-                                <div class="logo">
-                                    <span>Server 8</span>
-                                </div>
-                                <p>Kibana</p>
-                                <div class="subH dead">
-                                  <p>file live flow sdfsli sdf</p>
-                                </div>
-                                <div class="loader loading dead"></div>
-                              </div>
-
-
-                            </div> <!--ht-event-btns end-->
-                          </div> <!--Div:End col-md-9-->
-
-                          <div class="col-md-4" style="width:500px;">
-                            <!-- Chart Div -->
-                            <div id="chartdiv" style="height:280px;">
-                            </div>
-                          </div><!--Div:End col-md-5-->
-
-                        </div><!--Div:End row-->
-                      </div><!--Div:End toggleDiv-1-->
-                    </div><!--Div:End panelCustom-->
-
-                    <div class="panelCustom">
-                        <div class="panel-heading">
-                            <p class="panel-title">
-                                <a href="#toggleDiv-2" data-toggle="collapse" >
-                                  <i class="fa fa-minus-square"></i> WAS
-                                 </a>
-                            </p>
+                      <div class="ht-event-btn stl3" >
+                        <div class="flag">
+                            <span>Server 3</span>
                         </div>
-                        <div class="panel-collapse collapse in" id="toggleDiv-2" style="padding-left:40px; padding-bottom:0px;">
-                          <div class="row">
-                            <div class="col-md-9" style="width:1220px; ">
-                                <div class="ht-event-btns">
-                                  <div class="ht-event-btn stl1">
-                                    <div class="logo">
-                                        <span>Server 1</span>
-                                    </div>
-                                    <p>File beat</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl2">
-                                    <div class="logo">
-                                        <span>Server 2</span>
-                                    </div>
-                                    <p>Elastic search</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl3" >
-                                    <div class="logo">
-                                        <span>Server 3</span>
-                                    </div>
-                                    <p>Logstash</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl4">
-                                    <div class="logo">
-                                        <span>Server 4</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl3">
-                                    <div class="logo">
-                                        <span>Server 4</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                </div> <!--ht-event-btns end-->
-                                <div class="ht-event-btns">
-                                  <div class="ht-event-btn stl5">
-                                    <div class="logo">
-                                        <span>Server 5</span>
-                                    </div>
-                                    <p>File beat</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn">
-                                    <div class="logo">
-                                        <span>Server 6</span>
-                                    </div>
-                                    <p>Elastic search</p>
-                                    <div class="subH dead">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading dead"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl7" >
-                                    <div class="logo">
-                                        <span>Server 7</span>
-                                    </div>
-                                    <p>Logstash</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn">
-                                    <div class="logo">
-                                        <span>Server 8</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH dead">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading dead"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl3">
-                                    <div class="logo">
-                                        <span>Server 4</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-                                </div> <!--ht-event-btns end-->
-                            </div> <!--Div:End col-md-8-->
-
-                            <div class="col-md-5" style="width:500px;">
-                              <!-- Chart Div -->
-                              <div id="chartdiv2" style="height:280px; background-color:#0b1521">
-                              </div>
-                            </div><!--Div:End col-md-5-->
-
-                          </div>
+                        <p>Logstash</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
                         </div>
-                    </div>
-                    <div class="panelCustom">
-                        <div class="panel-heading">
-                            <p class="panel-title">
-                                <a href="#toggleDiv-3" data-toggle="collapse" >
-                                  <i class="fa fa-plus-square"></i> DB
-                                 </a>
-                            </p>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl4">
+                        <div class="flag">
+                            <span>Server 4</span>
                         </div>
-                        <div class="panel-collapse collapse" id="toggleDiv-3" style="padding-left:40px; padding-bottom:0px;">
-
-                                <div class="ht-event-btns">
-                                  <div class="ht-event-btn stl1">
-                                    <div class="logo">
-                                        <span>Server 1</span>
-                                    </div>
-                                    <p>File beat</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl2">
-                                    <div class="logo">
-                                        <span>Server 2</span>
-                                    </div>
-                                    <p>Elastic search</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl3" >
-                                    <div class="logo">
-                                        <span>Server 3</span>
-                                    </div>
-                                    <p>Logstash</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl4">
-                                    <div class="logo">
-                                        <span>Server 4</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                </div> <!--ht-event-btns end-->
-
-                                <div class="ht-event-btns">
-                                  <div class="ht-event-btn stl5">
-                                    <div class="logo">
-                                        <span>Server 5</span>
-                                    </div>
-                                    <p>File beat</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn">
-                                    <div class="logo">
-                                        <span>Server 6</span>
-                                    </div>
-                                    <p>Elastic search</p>
-                                    <div class="subH dead">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading dead"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn stl7" >
-                                    <div class="logo">
-                                        <span>Server 7</span>
-                                    </div>
-                                    <p>Logstash</p>
-                                    <div class="subH">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading"></div>
-                                  </div>
-
-                                  <div class="ht-event-btn">
-                                    <div class="logo">
-                                        <span>Server 8</span>
-                                    </div>
-                                    <p>Kibana</p>
-                                    <div class="subH dead">
-                                      <p>file live flow sdfsli sdf</p>
-                                    </div>
-                                    <div class="loader loading dead"></div>
-                                  </div>
-
-                                </div> <!--ht-event-btns end-->
+                        <p>Kibana</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
                         </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl5">
+                        <div class="flag">
+                            <span>Server 5</span>
+                        </div>
+                        <p>Kafka</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                    </div> <!--ht-event-btns end-->
+                  <div class="ht-event-btns">
+                    <div class="ht-event-btn stl5">
+                      <div class="flag">
+                          <span>Server 5</span>
+                      </div>
+                      <p>File beat</p>
+                      <div class="subH">
+                        <p>file live flow sdfsli sdf</p>
+                      </div>
+                      <div class="loader loading"></div>
                     </div>
 
-              </div><!--Div:End fluid faq-accordion-->
+                    <div class="ht-event-btn">
+                      <div class="flag dead">
+                          <span>Server 6</span>
+                      </div>
+                      <p>Elastic search</p>
+                      <div class="subH dead">
+                        <p>file live flow sdfsli sdf</p>
+                      </div>
+                      <div class="loader loading dead"></div>
+                    </div>
 
-        </div>
+                    <div class="ht-event-btn stl7" >
+                      <div class="flag">
+                          <span>Server 7</span>
+                      </div>
+                      <p>Logstash</p>
+                      <div class="subH">
+                        <p>file live flow sdfsli sdf</p>
+                      </div>
+                      <div class="loader loading"></div>
+                    </div>
 
-  </div>
+                    <div class="ht-event-btn">
+                      <div class="flag dead">
+                          <span>Server 8</span>
+                      </div>
+                      <p>Kibana</p>
+                      <div class="subH dead">
+                        <p>file live flow sdfsli sdf</p>
+                      </div>
+                      <div class="loader loading dead"></div>
+                    </div>
+
+                    <div class="ht-event-btn">
+                      <div class="flag dead">
+                          <span>Server 8</span>
+                      </div>
+                      <p>Kibana</p>
+                      <div class="subH dead">
+                        <p>file live flow sdfsli sdf</p>
+                      </div>
+                      <div class="loader loading dead"></div>
+                    </div>
+
+
+                  </div> <!--ht-event-btns end-->
+                </div> <!--Div:End col-md-9-->
+
+                <div class="col-md-4" style="width:500px;">
+                  <!-- Chart Div -->
+                  <div id="chartdiv" style="height:280px;">
+                  </div>
+                </div><!--Div:End col-md-5-->
+
+            </div><!--Div:End row-->
+          </div><!--Div:End toggleDiv-1-->
+        </div><!--Div:End panelCustom1-->
+
+        <div class="panelCustom">
+          <div class="panel-heading">
+            <p class="panel-title">
+              <i @click="click2=!click2" href="#toggleDiv-2" data-toggle="collapse" v-bind:class="[ click2 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]">
+              </i>&nbsp; WAS
+            </p>
+          </div>
+          <div class="panel-collapse collapse in" id="toggleDiv-2" style="padding-left:40px; padding-bottom:0px;">
+              <div class="row">
+                <div class="col-md-9" style="width:1220px; ">
+                    <div class="ht-event-btns">
+                      <div class="ht-event-btn stl1">
+                        <div class="flag">
+                            <span>Server 1</span>
+                        </div>
+                        <p>File beat</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl2">
+                        <div class="flag">
+                            <span>Server 2</span>
+                        </div>
+                        <p>Elastic search</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl3" >
+                        <div class="flag">
+                            <span>Server 3</span>
+                        </div>
+                        <p>Logstash</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl4">
+                        <div class="flag">
+                            <span>Server 4</span>
+                        </div>
+                        <p>Kibana</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl3">
+                        <div class="flag">
+                            <span>Server 4</span>
+                        </div>
+                        <p>Kibana</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                    </div> <!--ht-event-btns end-->
+                    <div class="ht-event-btns">
+                      <div class="ht-event-btn stl5">
+                        <div class="flag">
+                            <span>Server 5</span>
+                        </div>
+                        <p>File beat</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn">
+                        <div class="flag dead">
+                            <span>Server 6</span>
+                        </div>
+                        <p>Elastic search</p>
+                        <div class="subH dead">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading dead"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl7" >
+                        <div class="flag">
+                            <span>Server 7</span>
+                        </div>
+                        <p>Logstash</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+
+                      <div class="ht-event-btn">
+                        <div class="flag dead">
+                            <span>Server 8</span>
+                        </div>
+                        <p>Kibana</p>
+                        <div class="subH dead">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading dead"></div>
+                      </div>
+
+                      <div class="ht-event-btn stl3">
+                        <div class="flag">
+                            <span>Server 10</span>
+                        </div>
+                        <p>Kibana</p>
+                        <div class="subH">
+                          <p>file live flow sdfsli sdf</p>
+                        </div>
+                        <div class="loader loading"></div>
+                      </div>
+                    </div> <!--ht-event-btns end-->
+                </div> <!--Div:End col-md-8-->
+
+                <div class="col-md-5" style="width:500px;">
+                  <!-- Chart Div -->
+                  <div id="chartdiv2" style="height:280px;">
+                  </div>
+                </div><!--Div:End col-md-5-->
+
+              </div>
+            </div>
+        </div><!--Div:End panelCustom2-->
+
+        <div class="panelCustom">
+          <div class="panel-heading">
+              <p class="panel-title">
+                <i @click="click3=!click3" href="#toggleDiv-3" data-toggle="collapse" v-bind:class="[ click3 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]">
+                </i>&nbsp; DB
+              </p>
+          </div>
+          <div class="panel-collapse collapse" id="toggleDiv-3" style="padding-left:40px; padding-bottom:0px;">
+            <div class="row">
+              <div class="col-md-9" style="width:1220px; ">
+                <div class="ht-event-btns">
+                  <div class="ht-event-btn stl1">
+                    <div class="flag">
+                        <span>Server 1</span>
+                    </div>
+                    <p>File beat</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl2">
+                    <div class="flag">
+                        <span>Server 2</span>
+                    </div>
+                    <p>Elastic search</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl3" >
+                    <div class="flag">
+                        <span>Server 3</span>
+                    </div>
+                    <p>Logstash</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl4">
+                    <div class="flag">
+                        <span>Server 4</span>
+                    </div>
+                    <p>Kibana</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl2">
+                    <div class="flag">
+                        <span>Server 5</span>
+                    </div>
+                    <p>Elastic search</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                </div> <!--ht-event-btns end-->
+
+                <div class="ht-event-btns">
+                  <div class="ht-event-btn stl5">
+                    <div class="flag">
+                        <span>Server 6</span>
+                    </div>
+                    <p>File beat</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn">
+                    <div class="flag dead">
+                        <span>Server 7</span>
+                    </div>
+                    <p>Elastic search</p>
+                    <div class="subH dead">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading dead"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl7" >
+                    <div class="flag">
+                        <span>Server 8</span>
+                    </div>
+                    <p>Logstash</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                  <div class="ht-event-btn">
+                    <div class="flag dead">
+                        <span>Server 9</span>
+                    </div>
+                    <p>Kibana</p>
+                    <div class="subH dead">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading dead"></div>
+                  </div>
+
+                  <div class="ht-event-btn stl2">
+                    <div class="flag">
+                        <span>Server 10</span>
+                    </div>
+                    <p>Elastic search</p>
+                    <div class="subH">
+                      <p>file live flow sdfsli sdf</p>
+                    </div>
+                    <div class="loader loading"></div>
+                  </div>
+
+                </div> <!--ht-event-btns end-->
+              </div> <!--Div:End col-md-9-->
+              <div class="col-md-4" style="width:500px;">
+                <!-- Chart Div -->
+                <div id="chartdiv3" style="height:280px;">
+                </div>
+              </div><!--Div:End col-md-5-->
+            </div><!--Div:End row-->
+          </div><!--Div:End toggleDiv-3-->
+        </div><!--Div:End panelCustom3-->
+
+    </div><!--Div:End fluid faq-accordion-->
+</div>
   <!--===================================================-->
   <!--End page content-->
 </template>
@@ -414,7 +435,6 @@
 <script src="js/demo/dashboard-2.js"></script>
 
 <script>
-
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
@@ -426,8 +446,9 @@ am4core.useTheme(am4themes_dark);
 export default {
   data (){
     return {
-      click0:true,
       click1:true,
+      click2:true,
+      click3:false,
       chartData:[{
         "year": new Date(2018, 12, 1),
         "cars": 1587,
@@ -527,16 +548,7 @@ export default {
     }
   },
   methods:{
-    clickItemBtn0(){
-      this.click0=!this.click0;
-    },
-    clickItemBtn1(){
-      this.click1=!this.click1;
-    },
-    createChart1(){
-      // Create chart
-      let chart = am4core.create("chartdiv", am4charts.XYChart);
-
+    createChart1(chart){
       chart.data = this.chartData;
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -574,7 +586,7 @@ export default {
       series2.tooltip.background.fill = am4core.color("#FFF");
       series2.tooltip.getFillFromObject = false;
       series2.tooltip.getStrokeFromObject = true;
-      series2.tooltip.background.strokeWidth = 3;
+      series2.tooltip.background.strokeWidth = 1;
       series2.sequencedInterpolation = true;
       series2.fillOpacity = 0.6;
       series2.stacked = true;
@@ -588,7 +600,7 @@ export default {
       series3.tooltip.background.fill = am4core.color("#FFF");
       series3.tooltip.getFillFromObject = false;
       series3.tooltip.getStrokeFromObject = true;
-      series3.tooltip.background.strokeWidth = 3;
+      series3.tooltip.background.strokeWidth = 1;
       series3.sequencedInterpolation = true;
       series3.fillOpacity = 0.6;
       series3.defaultState.transitionDuration = 1000;
@@ -674,11 +686,16 @@ export default {
     }
   },
   mounted(){
-    this.createChart1();
+    // Create chart
+    let chart = am4core.create("chartdiv", am4charts.XYChart);
+    this.createChart1(chart);
+
     this.createChart2();
+
+    let chart2 = am4core.create("chartdiv3", am4charts.XYChart);
+    this.createChart1(chart2);
   },
   create(){
-
 
   },
   beforeDestroy() {
@@ -700,7 +717,6 @@ div.row-line {
   border: 0;
   box-shadow: none !important;
   margin-bottom: 20px;
-  background-color: #0b1521;
 }
 
 div .ht-event-btns {
@@ -711,11 +727,6 @@ div .ht-event-btns {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: left;
-    /*
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex: 1;
-    -ms-flex: 1;  */
 
     width: 1220px;
     height: 140px;
@@ -737,19 +748,31 @@ div .ht-event-btns .ht-event-btn {
     cursor: pointer;
 }
 
-div .ht-event-btns .ht-event-btn .logo {
+div .ht-event-btns .ht-event-btn .flag {
     background-color: #333;
     width: 80px;
     height: 80px;
     position: absolute;
     top: 0;
     right: 0;
-    font-size: 13px;
+    font-size: 12px;
     border-top-right-radius: 7px;
-    background: url(./img/evt_logo.png) no-repeat 0 0;
+    background: url(./img/normal_flag.png) no-repeat 0 0;
 }
 
-div .ht-event-btns .ht-event-btn .logo span {
+div .ht-event-btns .ht-event-btn .flag.dead {
+
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    border-top-right-radius: 7px;
+    background: url(./img/dead_flag.png) no-repeat 0 0;
+}
+
+div .ht-event-btns .ht-event-btn .flag span {
     position: absolute;
     top: 19px;
     left: 26px;
@@ -825,7 +848,7 @@ div .ht-event-btns .ht-event-btn .subH.dead p{
 
 .loader.loading.dead {
   opacity: 1;
-  background: linear-gradient(to right,#808080, #404040, #808080);
+  background: linear-gradient(to right,#D4A0AC, #ED2450, #D4A0AC);
 }
 
 @-webkit-keyframes barberpole {
