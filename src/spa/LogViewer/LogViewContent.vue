@@ -119,12 +119,16 @@ export default {
       }
     },
     mouseInCell(event){
-      // console.log(event.currentTarget.childNodes[2]);
+      console.log(event.currentTarget.childNodes[2].style);
       event.currentTarget.childNodes[0].style.fontWeight="bold";
       event.currentTarget.childNodes[2].style.fontWeight="bold";
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
+
+      event.currentTarget.childNodes[2].style.overflow='auto';
+      event.currentTarget.childNodes[2].style.textOverflow='clip';
+      event.currentTarget.childNodes[2].style.whiteSpace='normal';
     },
     mouseOutCell(event){;
       event.currentTarget.childNodes[0].style.fontWeight='';
@@ -132,6 +136,10 @@ export default {
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='';
       event.currentTarget.childNodes[2].style.backgroundColor='';
+
+      event.currentTarget.childNodes[2].style.overflow='';
+      event.currentTarget.childNodes[2].style.textOverflow='';
+      event.currentTarget.childNodes[2].style.whiteSpace='';
     },
     searchTerm: function() {
       // using JSONPlaceholder
@@ -310,8 +318,11 @@ export default {
     left: 0;
     width: 18%;
     text-align: right;
-    top: 30px;
+    top: 20px;
     color: white;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
 }
 
 .timeline-custom .timeline-icon-custom {
@@ -319,7 +330,7 @@ export default {
     position: absolute;
     width: 10%;
     text-align: center;
-    top: 40px;
+    top: 20px;
 }
 
 .timeline-custom .timeline-icon-custom a {
@@ -337,15 +348,29 @@ export default {
 }
 
 .timeline-custom .timeline-body-custom {
-    margin-left: 23%;
+    margin-left: 22%;
     margin-right: 1%;
     background: #fff;
     position: relative;
     padding: 20px 25px;
     border-radius: 6px;
+    /* border: 1px solid gray; */
     color: black;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
 }
 
+.timeline-custom:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 5px;
+  background: black;
+  left: 20%;
+  margin-left: -2.5px;
+}
 
 *, ::after, ::before {
     box-sizing: border-box;
