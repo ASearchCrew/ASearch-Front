@@ -13,7 +13,7 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="cSbckb" style="height: 820px; width: 100%;">
+                <div class="cSbckb" style="height: 820px; width: 100%;" @mousewheel="moveWheel">
                     <transition-group
                         v-if="hasResult"
                         :css="false"
@@ -81,7 +81,7 @@ export default {
   mounted() {
     // 초기 로그 요청
     this.searchTerm();
-    this.startStream();
+
     // Stream 버튼 클릭 시 스트리밍 실행 / 정지
     this.$EventBus.$on('stream', function(isClicked) {
       this.isClicked = isClicked
@@ -89,7 +89,9 @@ export default {
       this.isClicked ? this.startStream() : this.stopStream()
     }.bind(this));
     this.scrollToEnd();
-    this.$EventBus.$on('searchKeyword', this.onReceive);
+
+    // 사용자가 Search Keywork 입력 시, query setting
+    this.$EventBus.$on('sendQuery', this.setQuery);
   },
   updated() {
     this.scrollToEnd();
@@ -99,15 +101,32 @@ export default {
     this.interval = null
   },
   methods: {
+    moveWheel(event){
+      var container = document.querySelector(".cSbckb");
+      console.log('현재 : ' + container.scrollTop);
+      console.log('전체 : ' + container.scrollHeight);
+      console.log(event.wheelDelta);
+      
+      var entScrollHeight = container.scrollHeight;
+      var curScrollHeight = container.scrollTop;
+      if(curScrollHeight === 0 && event.wheelDelta > 0){
+        console.log('over Wheel Up');
+        this.searchTerm();
+      }
+      if(entScrollHeight - curScrollHeight === 820 && event.wheelDelta < 0){
+        console.log('over Wheel Down');
+        this.searchTerm();
+      }
+    },
     mouseInCell(event){
-      console.log(event.currentTarget.childNodes)
+      // console.log(event.currentTarget.childNodes[2]);
       event.currentTarget.childNodes[0].style.fontWeight="bold";
       event.currentTarget.childNodes[2].style.fontWeight="bold";
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
     },
-    mouseOutCell(event){
+    mouseOutCell(event){;
       event.currentTarget.childNodes[0].style.fontWeight='';
       event.currentTarget.childNodes[2].style.fontWeight='';
       
@@ -117,20 +136,28 @@ export default {
     searchTerm: function() {
       // using JSONPlaceholder
       const baseURI = 'https://jsonplaceholder.typicode.com'
-      this.$http.get(`${baseURI}/posts`)
-      // const baseURI = 'http://52.79.220.131:8080';
-      // this.$http.get(`${baseURI}/api/v1/log?offset=${this.offset}`)
-        .then((result) => {
-          console.log(result)
-          this.results = result.data
-          // this.offset = this.offset + 1
-          // this.computedList = this.posts.filter((item) => {
-          //   // console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
-          //   return item.body.toLowerCase().indexOf(this.query.toLowerCase()) !== -1 // body 부분 수정필요!!
-          // })
-          // this.posts.push(result.data)
-          // count = count + 1
+      this.$http.get(`${baseURI}/posts`, {    //get 방식 -> post방식 고려(왜 Kibana는 post?)
+          headers: {
+            query: this.query,
+            timeBefore: this.query
+          }
         })
+        .then((result) => {
+          console.log(result);
+          this.results = result.data;
+        })
+
+        // using API(WAS Server)
+        // const baseURI = 'http://52.79.220.131:8080';
+        // this.$http.get('${baseURI}/api/v1/log?offset=${this.offset}')
+        // .then((result) => {
+        //   this.results.push(result.data);
+        //   this.offset += 1;
+        //   // this.computedList = this.posts.filter((item) => {
+        //   //   // console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
+        //   //   return item.body.toLowerCase().indexOf(this.query.toLowerCase()) !== -1 // body 부분 수정필요!!
+        //   // })
+        // })
     },
     startStream: function() {
       this.interval = setInterval(this.searchTerm, 3000)
@@ -138,8 +165,8 @@ export default {
     stopStream: function() {
       clearInterval(this.interval)
     },
-    onReceive(text) {
-      this.query = text
+    setQuery(query) {
+      this.query = query;
     },
     scrollToEnd() {
       var container = document.querySelector(".cSbckb");
@@ -275,7 +302,7 @@ export default {
 .timeline-custom>li {
     position: relative;
     min-height: 50px;
-    padding: 20px 0;
+    padding: 5px 0;
 }
 
 .timeline-custom .timeline-time-custom {
@@ -284,6 +311,7 @@ export default {
     width: 18%;
     text-align: right;
     top: 30px;
+    color: white;
 }
 
 .timeline-custom .timeline-icon-custom {
@@ -304,41 +332,20 @@ export default {
     line-height: 10px;
     color: #fff;
     font-size: 14px;
-    border: 5px solid #2d353c;
+    border: 5px solid black;
     transition: border-color .2s linear;
 }
 
 .timeline-custom .timeline-body-custom {
     margin-left: 23%;
-    margin-right: 3%;
+    margin-right: 1%;
     background: #fff;
     position: relative;
     padding: 20px 25px;
     border-radius: 6px;
+    color: black;
 }
 
-.timeline-custom .timeline-body-custom:before {
-    content: '';
-    display: block;
-    position: absolute;
-    border: 10px solid transparent;
-    border-right-color: #fff;
-    left: -20px;
-    top: 20px;
-}
-
-
-
-.timeline-custom:before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  bottom: 5px;
-  width: 5px;
-  background: #2d353c;
-  left: 20%;
-  margin-left: -2.5px;
-}
 
 *, ::after, ::before {
     box-sizing: border-box;

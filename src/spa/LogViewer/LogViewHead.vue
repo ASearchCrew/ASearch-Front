@@ -3,7 +3,7 @@
         <div class="sub-navbar">
             <div class="euiFlexGroup euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
                 <div class="euiFlexItem " >
-                    <input type="text" id="search" class="form-control" placeholder="Search for..." @keyup="sendQuery">
+                    <input type="text" id="query" class="form-control" placeholder="Search for..." @keyup.enter="sendQuery">
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
                     <div class="btn-group">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
                     <div id="picker"> </div>
-                    <input type="hidden" id="result" value="">
+                    <input type="hidden" id="time" value="">
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
                     <button v-if="isClicked" type="button" class="btn btn-danger" @click="streamBtnClick">Stop Stream</button>
@@ -85,40 +85,40 @@ export default {
     data() {
         return {
             query: '',
-            isClicked: true,
+            isClicked: false,
             time: '',
-            url: '',
-            radioOption: '4',
-            radioOptions: [
-                { key: '1', name: '1 Year' },
-                { key: '2', name: '1 Month' },
-                { key: '3', name: '1 Week' },
-                { key: '4', name: '1 Day' },
-                { key: '5', name: '1 Hour' },
-                { key: '6', name: '1 Minute' }
-            ],
-            date: new Date(),
-            options: {
-                format: 'DD/MM/YYYY h:mm:ss',
-                useCurrent: false,
-                showClear: true,
-                showClose: true,
-            }
         }
     },
     mounted() {
+        // console.log($('#picker')[0])
         $('#picker').dateTimePicker();
+        
+        console.log($('#picker').$('.span'))
+        // function setUserID(newTime) {
+        //     $('#time').val(newTime)
+        //                 .trigger('change');
+        // }
+        // $('#time').change(function(){
+        //     //fire your ajax call
+        //     alert('!!');
+        // })
+
+        
     },
     methods: {
         streamBtnClick: function() {
             this.isClicked = !this.isClicked
             this.$EventBus.$emit('stream', this.isClicked)
         },
-        sendQuery: function(event) {
+        sendQuery: function() {
             //  alert();
             // console.log(event.key)
-            console.log(document.getElementById('search').value)
-            this.$EventBus.$emit('searchKeyword', document.getElementById('search').value)
+            console.log(document.getElementById('query').value)
+            this.$EventBus.$emit('sendQuery', document.getElementById('query').value)
+        },
+        sendTime: function(newTime) {
+            console.log(newTime)
+            this.$EventBus.$emit('sendTime', newTime)
         }
     }
 }
@@ -221,4 +221,8 @@ export default {
     position: relative;
 }
 
+
+#picker {
+    color: black;
+}
 </style>

@@ -6,7 +6,7 @@
             selectData: "now",
             dateFormat: "YYYY-MM-DD HH:mm",
             showTime: true,
-            locale: 'en',
+            locale: 'ko',
             positionShift: { top: 45, left: -450},
             title: "Select Date and Time",
             buttonTitle: "Select"
@@ -107,7 +107,7 @@
                             if (m.month() == selectedMonth.month() && m.weekday() == j) {
                                 var day = parseInt(m.format('D'));
                                 $b.text(day);
-                                if (flagStart && day < dayNow) {
+                                if (flagStart && day > dayNow) {
                                     $b.addClass('dtp_modal-grey');
                                 }
                                 else if (flagSelect && day == cerDay) {
@@ -365,7 +365,7 @@
                         $s.text(lastSelected.format(arrF[1]));
                         elem.append($s);
                         $s = $('<i>');
-                        $s.addClass('fa fa-clock-o ico-size');
+                        $s.addClass('fa fa-clock ico-size');
                         elem.append($s);
                     }
                 }
