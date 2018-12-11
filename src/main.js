@@ -8,12 +8,18 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false
 
 const router = new VueRouter({
-  routes: Routes
+  routes: Routes,
+  mode : 'history'
 });
 
 //axios
 import Axios from 'axios';
-Vue.prototype.$http = Axios
+var axios = require('axios');
+var axiosInstance = axios.create({
+  baseURL: 'http://192.168.0.11:8080',
+  /* other custom settings */
+})
+Vue.prototype.$http = axiosInstance
 
 //eventbus
 Vue.prototype.$EventBus = new Vue();

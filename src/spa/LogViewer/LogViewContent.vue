@@ -14,7 +14,7 @@
                     </div>
                 </div> -->
                 <div class="cSbckb" style="height: 820px; width: 100%;" @mousewheel="moveWheel">
-                    <transition-group
+                    <!-- <transition-group
                         v-if="hasResult"
                         :css="false"
                         name="list"
@@ -27,25 +27,24 @@
                             <div class="timeline-icon-custom"><a href="#"></a></div>
                             <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
                         </div>
-
-                    </transition-group>
-
-
+                    </transition-group> -->
                     
-                    <transition-group v-else name="list" tag="ul" class="timeline-custom">
-                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                            <!-- <div class="timeline-time-custom" scale="medium">{{ result.timestamp }}</div> -->
-                            <div class="timeline-time-custom" scale="medium">{{ result.title }}</div>
-                            <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <!-- <div class="timeline-body-custom" scale="medium">{{ result.message }}</div> -->
-                            <div class="timeline-body-custom" scale="medium">{{ result.body }}</div>
-                        </li>
 
-                        <!-- <div v-for="(post) in posts" style="height:auto" :key="post.id" @mouseover="mouseInCell" @mouseout="mouseOutCell" class="eBjuvI">
-                            <div class="iMKTAC" scale="medium">{{ post.title }}</div>
-                            <div class="jyzsZJ" scale="medium">{{ post.body }}</div>
-                        </div> -->
-                    </transition-group>
+                    <!-- <transition-group name="list" tag="ul" class="timeline-custom">
+                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
+                            <div class="timeline-icon-custom"><a href="#"></a></div>
+                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
+                        </li>
+                    </transition-group> -->
+
+                    <ul class="timeline-custom">
+                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
+                            <div class="timeline-icon-custom"><a href="#"></a></div>
+                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -58,43 +57,32 @@
 export default {
   data() {
     return {
-      offset: 0,
       query: '',
+      time: null,
       results: [],
       isClicked: false,
       interval: null,
-      computedList:null
+      tmp: [],
     }
   },
-  computed: {
-    // computedList: function() {
-    //   var vm = this
-    //   return vm.posts.filter(function(item) {
-    //     console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
-    //     return item.body.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1 // body 부분 수정필요!!
-    //   })
-    // },
-    hasResult: function() {
-      return this.query.length > 0
-    }
+  created() {
+    // 초기 로그 요청
+    this.initRequest();
   },
   mounted() {
-    // 초기 로그 요청
-    this.searchTerm();
-
     // Stream 버튼 클릭 시 스트리밍 실행 / 정지
     this.$EventBus.$on('stream', function(isClicked) {
       this.isClicked = isClicked
       console.log(this.isClicked)
       this.isClicked ? this.startStream() : this.stopStream()
     }.bind(this));
-    this.scrollToEnd();
+    
 
     // 사용자가 Search Keywork 입력 시, query setting
     this.$EventBus.$on('sendQuery', this.setQuery);
-  },
-  updated() {
-    this.scrollToEnd();
+
+    // 사용자가 날짜&시간 선택 시, time setting
+    this.$EventBus.$on('sendTime', this.setTime);
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -103,23 +91,42 @@ export default {
   methods: {
     moveWheel(event){
       var container = document.querySelector(".cSbckb");
-      console.log('현재 : ' + container.scrollTop);
-      console.log('전체 : ' + container.scrollHeight);
-      console.log(event.wheelDelta);
+      // console.log('현재 : ' + container.scrollTop);
+      // console.log('전체 : ' + container.scrollHeight);
+      // console.log(event.wheelDelta);
       
       var entScrollHeight = container.scrollHeight;
       var curScrollHeight = container.scrollTop;
+
+      //scroll Up
       if(curScrollHeight === 0 && event.wheelDelta > 0){
         console.log('over Wheel Up');
-        this.searchTerm();
+        
       }
+
+      //scroll Down
       if(entScrollHeight - curScrollHeight === 820 && event.wheelDelta < 0){
         console.log('over Wheel Down');
-        this.searchTerm();
+        var t = new Date(this.results[this.results.length-1].timeStamp)
+        var myDate = t.getTime();
+        console.log(myDate)
+        this.$http.get('/api/v1/log', {
+          params: {
+            direction: 'down',
+            time: myDate
+          }
+        })
+        .then((result) => {
+          this.tmp = result.data;
+          for(var i = 0; i < this.tmp.length; i++){
+            this.results.push(this.tmp[i]);
+          }
+          console.log(this.tmp)
+        })
       }
     },
     mouseInCell(event){
-      console.log(event.currentTarget.childNodes[2].style);
+      // console.log(event.currentTarget.childNodes[2].style);
       event.currentTarget.childNodes[0].style.fontWeight="bold";
       event.currentTarget.childNodes[2].style.fontWeight="bold";
       
@@ -130,7 +137,7 @@ export default {
       event.currentTarget.childNodes[2].style.textOverflow='clip';
       event.currentTarget.childNodes[2].style.whiteSpace='normal';
     },
-    mouseOutCell(event){;
+    mouseOutCell(event){
       event.currentTarget.childNodes[0].style.fontWeight='';
       event.currentTarget.childNodes[2].style.fontWeight='';
       
@@ -141,40 +148,49 @@ export default {
       event.currentTarget.childNodes[2].style.textOverflow='';
       event.currentTarget.childNodes[2].style.whiteSpace='';
     },
-    searchTerm: function() {
-      // using JSONPlaceholder
-      const baseURI = 'https://jsonplaceholder.typicode.com'
-      this.$http.get(`${baseURI}/posts`, {    //get 방식 -> post방식 고려(왜 Kibana는 post?)
-          headers: {
-            query: this.query,
-            timeBefore: this.query
-          }
-        })
-        .then((result) => {
-          console.log(result);
-          this.results = result.data;
-        })
+    initRequest: async function() {
+      var t = new Date();
+      var myDate = t.getTime();
+      await this.$http.get('/api/v1/log', {
+        params: {
+          direction: 'center',
+          time: myDate
+        }
+      })
+      .then((result) => {
+        console.log(result);
+        this.results = result.data;
+      })
+      this.scrollToEnd();
+    },
+    requestLog: async function() {
+      var t = new Date();
+      var myDate = t.getMilliseconds();
+      await this.$http.get('/api/v1/log', {
+        params: {
+          direction: 'center',
+          time: 1544502133329
+        }
+      })
+      .then((result) => {
+        console.log(result);
+        this.results = result.data;
+      })
 
-        // using API(WAS Server)
-        // const baseURI = 'http://52.79.220.131:8080';
-        // this.$http.get('${baseURI}/api/v1/log?offset=${this.offset}')
-        // .then((result) => {
-        //   this.results.push(result.data);
-        //   this.offset += 1;
-        //   // this.computedList = this.posts.filter((item) => {
-        //   //   // console.log(item.body.toLowerCase().indexOf(vm.query.toLowerCase()));
-        //   //   return item.body.toLowerCase().indexOf(this.query.toLowerCase()) !== -1 // body 부분 수정필요!!
-        //   // })
-        // })
+      if(this.isClicked)
+        this.scrollToEnd();
     },
     startStream: function() {
-      this.interval = setInterval(this.searchTerm, 3000)
+      this.interval = setInterval(this.requestLog, 3000)
     },
     stopStream: function() {
       clearInterval(this.interval)
     },
     setQuery(query) {
       this.query = query;
+    },
+    setTime(time) {
+      this.time = time;
     },
     scrollToEnd() {
       var container = document.querySelector(".cSbckb");

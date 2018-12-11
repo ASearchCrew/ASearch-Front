@@ -31,8 +31,14 @@
                     </div>
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <div id="picker"> </div>
-                    <input type="hidden" id="time" value="">
+                    <!-- <div id="picker"> </div>
+                    <input type="hidden" id="time" value=""> -->
+                    <div class='input-group date' id='datetimepicker'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
                     <button v-if="isClicked" type="button" class="btn btn-danger" @click="streamBtnClick">Stop Stream</button>
@@ -90,20 +96,19 @@ export default {
         }
     },
     mounted() {
-        // console.log($('#picker')[0])
-        $('#picker').dateTimePicker();
-        
-        console.log($('#picker').$('.span'))
-        // function setUserID(newTime) {
-        //     $('#time').val(newTime)
-        //                 .trigger('change');
-        // }
-        // $('#time').change(function(){
-        //     //fire your ajax call
-        //     alert('!!');
-        // })
-
-        
+        $('#datetimepicker').datetimepicker({
+            language: 'ko',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1
+        }).on('change', function(e){
+            this.time = e.target.value
+            this.sendTime(this.time)
+	    }.bind(this));
     },
     methods: {
         streamBtnClick: function() {
