@@ -6,7 +6,6 @@
             <div class="kJLsxp">
                 <!-- <div class="nano has-scrollbar">
                     <div class="nano-content" tabindex="0" style="right: -17px;">
-
                     </div>
                     <div class="nano-pane">
                         <div class="nano-slider" style="height: 794px; transform: translate(0px, 0px);">
@@ -29,20 +28,18 @@
                         </div>
                     </transition-group> -->
                     
-
                     <!-- <transition-group name="list" tag="ul" class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
                             <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
                             <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
+                            <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)>{{ result.message }}</div>
                         </li>
                     </transition-group> -->
-
                     <ul class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
                             <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
                             <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
+                            <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)">{{ result.message }}</div>
                         </li>
                     </ul>
                 </div>
@@ -52,7 +49,6 @@
     <!--===================================================-->
     <!--End page content-->
 </template>
-
 <script>
 export default {
   data() {
@@ -63,6 +59,7 @@ export default {
       isClicked: false,
       interval: null,
       tmp: [],
+      dateReceived: true
     }
   },
   created() {
@@ -77,10 +74,8 @@ export default {
       this.isClicked ? this.startStream() : this.stopStream()
     }.bind(this));
     
-
     // 사용자가 Search Keywork 입력 시, query setting
     this.$EventBus.$on('sendQuery', this.setQuery);
-
     // 사용자가 날짜&시간 선택 시, time setting
     this.$EventBus.$on('sendTime', this.setTime);
   },
@@ -89,41 +84,81 @@ export default {
     this.interval = null
   },
   methods: {
-    moveWheel(event){
+    async moveWheel(event){
       var container = document.querySelector(".cSbckb");
-      // console.log('현재 : ' + container.scrollTop);
-      // console.log('전체 : ' + container.scrollHeight);
-      // console.log(event.wheelDelta);
-      
       var entScrollHeight = container.scrollHeight;
       var curScrollHeight = container.scrollTop;
-
+      var offset = container.offsetHeight;
+      
       //scroll Up
-      if(curScrollHeight === 0 && event.wheelDelta > 0){
+      if(curScrollHeight === 0 && event.wheelDelta > 0 && this.dateReceived){
         console.log('over Wheel Up');
-        
+        var t = new Date(this.results[0].timeStamp)
+        var myDate = t.getTime();
+        console.log(this.query);
+        let config = this.query.length > 0 ? {
+          params: {
+            direction: 'up',
+            time: myDate,
+            isStream: false,
+            search: this.query
+          }
+        }:{
+          params: {
+            direction: 'up',
+            isStream: false,
+            time: myDate
+          }
+        }
+        this.dateReceived = false
+        await this.$http.get('/api/v1/log', config)
+        .then((result) => {
+          console.log(result)
+          this.tmp = result.data;
+          for(var i = 0; i < this.tmp.length; i++){
+            this.results.unshift(this.tmp[i]);
+          }
+          console.log(this.tmp)
+          this.dateReceived = !this.dateReceived
+        })
       }
-
       //scroll Down
-      if(entScrollHeight - curScrollHeight === 820 && event.wheelDelta < 0){
+      if(offset + curScrollHeight === entScrollHeight && event.wheelDelta < 0 && this.dateReceived){
         console.log('over Wheel Down');
         var t = new Date(this.results[this.results.length-1].timeStamp)
         var myDate = t.getTime();
-        console.log(myDate)
-        this.$http.get('/api/v1/log', {
+        console.log(this.query);
+        let config = this.query.length > 0 ? {
           params: {
             direction: 'down',
+            time: myDate,
+            isStream: false,
+            search: this.query
+          }
+        }:{
+          params: {
+            direction: 'down',
+            isStream: false,
             time: myDate
           }
-        })
+        }
+        this.dateReceived = false
+        await this.$http.get('/api/v1/log', config)
         .then((result) => {
           this.tmp = result.data;
           for(var i = 0; i < this.tmp.length; i++){
             this.results.push(this.tmp[i]);
           }
           console.log(this.tmp)
+          this.dateReceived = !this.dateReceived
         })
       }
+    },
+    showDetail(id){
+      this.$http.get(`/api/v1/log/${id}`)
+      .then((result) => {
+        console.log(result);
+      })
     },
     mouseInCell(event){
       // console.log(event.currentTarget.childNodes[2].style);
@@ -132,7 +167,6 @@ export default {
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
-
       event.currentTarget.childNodes[2].style.overflow='auto';
       event.currentTarget.childNodes[2].style.textOverflow='clip';
       event.currentTarget.childNodes[2].style.whiteSpace='normal';
@@ -143,7 +177,6 @@ export default {
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='';
       event.currentTarget.childNodes[2].style.backgroundColor='';
-
       event.currentTarget.childNodes[2].style.overflow='';
       event.currentTarget.childNodes[2].style.textOverflow='';
       event.currentTarget.childNodes[2].style.whiteSpace='';
@@ -151,43 +184,78 @@ export default {
     initRequest: async function() {
       var t = new Date();
       var myDate = t.getTime();
-      await this.$http.get('/api/v1/log', {
+      let config = this.query.length > 0 ? {
         params: {
           direction: 'center',
-          time: myDate
+          time: myDate,
+          isStream: false,
+          search: this.query
         }
-      })
+      }:{
+        params: {
+          direction: 'center',
+          time: myDate,
+          isStream: false
+        }
+      }
+      await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
         this.results = result.data;
       })
       this.scrollToEnd();
     },
-    requestLog: async function() {
-      var t = new Date();
-      var myDate = t.getMilliseconds();
+    requestStream: async function() {
+        var t = new Date(this.results[this.results.length-1].timeStamp)
+        var myDate = t.getTime();
       await this.$http.get('/api/v1/log', {
         params: {
-          direction: 'center',
-          time: 1544502133329
+          direction: 'down',
+          isStream: true,
+          time: myDate
         }
       })
       .then((result) => {
         console.log(result);
-        this.results = result.data;
+        this.tmp = result.data;
+          for(var i = 0; i < this.tmp.length; i++){
+            this.results.push(this.tmp[i]);
+          }
+          console.log(this.tmp)
       })
-
       if(this.isClicked)
         this.scrollToEnd();
     },
     startStream: function() {
-      this.interval = setInterval(this.requestLog, 3000)
+      this.interval = setInterval(this.requestStream, 3000)
     },
     stopStream: function() {
       clearInterval(this.interval)
     },
-    setQuery(query) {
+    async setQuery(query) {
       this.query = query;
+      var t = new Date(this.results[this.results.length-1].timeStamp)
+      var myDate = t.getTime();
+      let config = this.query.length > 0 ? {
+        params: {
+          direction: 'center',
+          time: myDate,
+          isStream: false,
+          search: this.query
+        }
+      }:{
+        params: {
+          direction: 'center',
+          isStream: false,
+          time: myDate
+        }
+      }
+      await this.$http.get('/api/v1/log', config)
+      .then((result) => {
+        console.log(result);
+        this.results = result.data;
+      })
+      this.scrollToEnd();
     },
     setTime(time) {
       this.time = time;
@@ -224,39 +292,31 @@ export default {
   }
 }
 </script>
-
-
 <style scoped>
-
 /* .jyzsZJ {
   background-color: #ff0000;
 } */
-
 .msIpy {
     display: flex;
     flex-direction: row;
     /* background-color: rgb(255, 255, 255); */
     flex: 1 0 0%;
 }
-
 .kJLsxp {
     display: flex;
     flex-direction: column;
     flex: 1 0 0%;
     overflow: hidden;
 }
-
 .cSbckb {
     overflow-x: hidden;
     overflow-y: scroll;
     position: relative;
     /* padding-right: 20px; */
 }
-
 .cSbckb * {
     overflow-anchor: none;
 }
-
 .eBjuvI {
     display: grid;
     grid-template-columns: 1fr 4fr;
@@ -274,7 +334,6 @@ export default {
     overflow: hidden;
     cursor:pointer;
 }
-
 .iMKTAC {
     font-size: 14px;
     line-height: 1.5;
@@ -284,7 +343,6 @@ export default {
     padding: 2px 16px;
     border-right: 2px solid rgb(217, 217, 217);
 }
-
 .jyzsZJ {
     font-size: 14px;
     line-height: 1.5;
@@ -296,7 +354,6 @@ export default {
     padding: 2px 16px;
     overflow: visible;
 }
-
 .list-item {
   display: inline-block;
   margin-right: 0;
@@ -308,13 +365,9 @@ export default {
   opacity: 0;
   transform: translateY(30px);
 }
-
-
 #page-content {
     padding: 0;
 }
-
-
 /* ----------------------------------------------- */
 .timeline-custom {
     list-style-type: none;
@@ -322,13 +375,11 @@ export default {
     padding: 0;
     position: relative;
 }
-
 .timeline-custom>li {
     position: relative;
     min-height: 50px;
     padding: 5px 0;
 }
-
 .timeline-custom .timeline-time-custom {
     position: absolute;
     left: 0;
@@ -340,7 +391,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap; 
 }
-
 .timeline-custom .timeline-icon-custom {
     left: 15%;
     position: absolute;
@@ -348,7 +398,6 @@ export default {
     text-align: center;
     top: 20px;
 }
-
 .timeline-custom .timeline-icon-custom a {
     text-decoration: none;
     width: 20px;
@@ -362,7 +411,6 @@ export default {
     border: 5px solid black;
     transition: border-color .2s linear;
 }
-
 .timeline-custom .timeline-body-custom {
     margin-left: 22%;
     margin-right: 1%;
@@ -376,7 +424,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap; 
 }
-
 .timeline-custom:before {
   content: '';
   position: absolute;
@@ -387,9 +434,7 @@ export default {
   left: 20%;
   margin-left: -2.5px;
 }
-
 *, ::after, ::before {
     box-sizing: border-box;
 }
-
 </style>
