@@ -4,30 +4,9 @@
     <div id="page-content">
         <div class="msIpy">
             <div class="kJLsxp">
-                <!-- <div class="nano has-scrollbar">
-                    <div class="nano-content" tabindex="0" style="right: -17px;">
-                    </div>
-                    <div class="nano-pane">
-                        <div class="nano-slider" style="height: 794px; transform: translate(0px, 0px);">
-                        </div>
-                    </div>
-                </div> -->
-                <div class="cSbckb" style="height: 820px; width: 100%;" @mousewheel="moveWheel">
-                    <!-- <transition-group
-                        v-if="hasResult"
-                        :css="false"
-                        name="list"
-                        tag="div"
-                        @before-enter="beforeEnter"
-                        @enter="enter"
-                        @leave="leave">
-                        <div v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                            <div class="timeline-time-custom" scale="medium">{{ result.timestamp }}</div>
-                            <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <div class="timeline-body-custom" scale="medium">{{ result.message }}</div>
-                        </div>
-                    </transition-group> -->
-                    
+                <div class="cSbckb" style="height: 540px; width: 100%;" @mousewheel="moveWheel">
+                  <div class="nano">
+                    <div class="nano-content">
                     <!-- <transition-group name="list" tag="ul" class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
                             <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
@@ -35,13 +14,15 @@
                             <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)>{{ result.message }}</div>
                         </li>
                     </transition-group> -->
-                    <ul class="timeline-custom">
-                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
-                            <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)">{{ result.message }}</div>
-                        </li>
-                    </ul>
+                      <ul class="timeline-custom">
+                          <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                              <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
+                              <div class="timeline-icon-custom"><a href="#"></a></div>
+                              <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)">{{ result.message }}</div>
+                          </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>
@@ -59,7 +40,9 @@ export default {
       isClicked: false,
       interval: null,
       tmp: [],
-      dateReceived: true
+      dateReceived: true,
+      count: 0,
+      offset: 0
     }
   },
   created() {
@@ -96,25 +79,33 @@ export default {
         var t = new Date(this.results[0].timeStamp)
         var myDate = t.getTime();
         console.log(this.query);
+        this.offset++;
         let config = this.query.length > 0 ? {
           params: {
             direction: 'up',
             time: myDate,
             isStream: false,
-            search: this.query
+            search: this.query,
+            initialCount: this.count,
+            upScrollOffset: this.offset,
+            hostName: 'filebeat'
           }
         }:{
           params: {
             direction: 'up',
             isStream: false,
-            time: myDate
+            time: myDate,
+            initialCount: this.count,
+            upScrollOffset: this.offset,
+            hostName: 'filebeat'
           }
         }
         this.dateReceived = false
         await this.$http.get('/api/v1/log', config)
         .then((result) => {
           console.log(result)
-          this.tmp = result.data;
+          this.tmp = result.data.logs;
+          this.count = result.data.sumCount;
           for(var i = 0; i < this.tmp.length; i++){
             this.results.unshift(this.tmp[i]);
           }
@@ -128,24 +119,30 @@ export default {
         var t = new Date(this.results[this.results.length-1].timeStamp)
         var myDate = t.getTime();
         console.log(this.query);
+        this.offset--;  
         let config = this.query.length > 0 ? {
           params: {
             direction: 'down',
             time: myDate,
             isStream: false,
-            search: this.query
+            search: this.query,
+            initialCount: this.count,
+            offset: this.offset
           }
         }:{
           params: {
             direction: 'down',
             isStream: false,
-            time: myDate
+            time: myDate,
+            initialCount: this.count,
+            offset: this.offset
           }
         }
         this.dateReceived = false
         await this.$http.get('/api/v1/log', config)
         .then((result) => {
-          this.tmp = result.data;
+          this.tmp = result.data.logs;
+          this.count = result.data.sumCount;
           for(var i = 0; i < this.tmp.length; i++){
             this.results.push(this.tmp[i]);
           }
@@ -189,19 +186,26 @@ export default {
           direction: 'center',
           time: myDate,
           isStream: false,
-          search: this.query
+          search: this.query,
+          initialCount: 0,
+          upScrollOffset: 0,
+          hostName: 'filebeat'
         }
       }:{
         params: {
           direction: 'center',
           time: myDate,
-          isStream: false
+          isStream: false,
+          initialCount: 0,
+          upScrollOffset: 0,
+          hostName: 'filebeat'
         }
       }
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
-        this.results = result.data;
+        this.results = result.data.logs;
+        this.count = result.data.sumCount;
       })
       this.scrollToEnd();
     },
@@ -217,11 +221,12 @@ export default {
       })
       .then((result) => {
         console.log(result);
-        this.tmp = result.data;
-          for(var i = 0; i < this.tmp.length; i++){
-            this.results.push(this.tmp[i]);
-          }
-          console.log(this.tmp)
+        this.tmp = result.data.logs;
+        this.count = result.data.sumCount;
+        for(var i = 0; i < this.tmp.length; i++){
+          this.results.push(this.tmp[i]);
+        }
+        console.log(this.tmp)
       })
       if(this.isClicked)
         this.scrollToEnd();
@@ -241,19 +246,25 @@ export default {
           direction: 'center',
           time: myDate,
           isStream: false,
-          search: this.query
+          search: this.query,
+          initialCount: this.count,
+          upScrollOffset: 0
         }
       }:{
         params: {
           direction: 'center',
           isStream: false,
-          time: myDate
+          time: myDate,
+          initialCount: this.count,
+          upScrollOffset: 0
         }
       }
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
-        this.results = result.data;
+        this.results = result.data.logs;
+        this.count = result.data.sumCount;
+        console.log('sumcount : ' + this.count)
       })
       this.scrollToEnd();
     },
@@ -310,7 +321,7 @@ export default {
 }
 .cSbckb {
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
     position: relative;
     /* padding-right: 20px; */
 }
@@ -383,7 +394,7 @@ export default {
 .timeline-custom .timeline-time-custom {
     position: absolute;
     left: 0;
-    width: 18%;
+    width: 13%;
     text-align: right;
     top: 20px;
     color: white;
@@ -392,7 +403,7 @@ export default {
     white-space: nowrap; 
 }
 .timeline-custom .timeline-icon-custom {
-    left: 15%;
+    left: 10%;
     position: absolute;
     width: 10%;
     text-align: center;
@@ -412,7 +423,7 @@ export default {
     transition: border-color .2s linear;
 }
 .timeline-custom .timeline-body-custom {
-    margin-left: 22%;
+    margin-left: 17%;
     margin-right: 1%;
     background: #fff;
     position: relative;
@@ -431,7 +442,7 @@ export default {
   bottom: 5px;
   width: 5px;
   background: black;
-  left: 20%;
+  left: 15%;
   margin-left: -2.5px;
 }
 *, ::after, ::before {

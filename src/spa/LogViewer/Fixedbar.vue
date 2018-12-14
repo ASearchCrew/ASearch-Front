@@ -6,16 +6,9 @@
                     <!--Server Menu-->
                     <p class="pad-all text-main text-sm text-uppercase text-bold">Server List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> SERVER 1</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 2</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> SERVER 3</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-support icon-lg icon-fw"></i> SERVER 4</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> SERVER 5</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 6</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> SERVER 7</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-support icon-lg icon-fw"></i> SERVER 8</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> SERVER 9</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> SERVER 10</a>
+                        <a href="#" class="list-group-item" v-for="server in serverList" :key="server.hostName">
+                            <i class="fas fa-server icon-lg icon-fw"></i>{{ server.hostName }}
+                        </a>
                     </div>
 
                     <hr>
@@ -23,10 +16,10 @@
                     <!--WAS Menu-->
                     <p class="pad-all text-main text-sm text-uppercase text-bold">WAS List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> WAS 1</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> WAS 2</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> WAS 3</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-support icon-lg icon-fw"></i> WAS 4</a>
+                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 1</a>
+                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 2</a>
+                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 3</a>
+                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 4</a>
                     </div>
 
                     <hr>
@@ -34,10 +27,10 @@
                     <!--Server Menu-->
                     <p class="pad-all text-main text-sm text-uppercase text-bold">DB List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item"><i class="demo-pli-information icon-lg icon-fw"></i> Database 1</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-mine icon-lg icon-fw"></i> Database 2</a>
-                        <a href="#" class="list-group-item"><i class="demo-pli-credit-card-2 icon-lg icon-fw"></i> Database 3</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="demo-pli-support icon-lg icon-fw"></i> Database 4</a>
+                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 1</a>
+                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 2</a>
+                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 3</a>
+                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="fas fa-database icon-lg icon-fw"></i> Database 4</a>
                     </div>
                     
                     <!-- <ul class="list-group pad-btm bg-trans">
@@ -78,10 +71,26 @@
 
 <script>
 export default {
-    name: 'Fixedbar'
+    name: 'Fixedbar',
+    date() {
+        return {
+            serverList: []
+        }
+    },
+    methods: {
+        requestServerList: async function() {
+            await this.$http.get('/api/v1/management/server')
+            .then((result) => {
+                this.serverList = result
+                console.log(this.serverList)
+            });
+        },
+    },
+    created() {
+        this.requestServerList();
+    }
 }
 </script>
-
 
 <style scoped>
 
