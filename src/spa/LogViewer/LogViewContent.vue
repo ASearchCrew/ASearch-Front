@@ -21,6 +21,7 @@
                               <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)">{{ result.message }}</div>
                           </li>
                       </ul>
+                      
                     </div>
                   </div>
                 </div>
@@ -42,7 +43,9 @@ export default {
       tmp: [],
       dateReceived: true,
       count: 0,
-      offset: 0
+      offset: 0,
+      time2: 0,
+      duration: 5000
     }
   },
   created() {
@@ -67,6 +70,12 @@ export default {
     this.interval = null
   },
   methods: {
+    show () {
+      this.$modal.show('hello-world');
+    },
+    hide () {
+      this.$modal.hide('hello-world');
+    },
     async moveWheel(event){
       var container = document.querySelector(".cSbckb");
       var entScrollHeight = container.scrollHeight;
@@ -151,11 +160,13 @@ export default {
         })
       }
     },
-    showDetail(id){
-      this.$http.get(`/api/v1/log/${id}`)
+    async showDetail(id){
+      await this.$http.get(`/api/v1/log/${id}`)
       .then((result) => {
         console.log(result);
       })
+
+      this.$modal.show('hello-world', { result: this.result })
     },
     mouseInCell(event){
       // console.log(event.currentTarget.childNodes[2].style);
@@ -204,7 +215,8 @@ export default {
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
-        this.results = result.data.logs;
+        // this.results = result.data.logs;
+        this.results = result.data;
         this.count = result.data.sumCount;
       })
       this.scrollToEnd();

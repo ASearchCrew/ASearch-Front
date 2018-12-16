@@ -1,97 +1,136 @@
 <template>
+<div id="myFixedBar">
     <div class="page-fixedbar-container">
         <div class="page-fixedbar-content">
             <div class="nano">
                 <div class="nano-content">
                     <!--Server Menu-->
-                    <p class="pad-all text-main text-sm text-uppercase text-bold">Server List</p>
+                    <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-server icon-lg icon-fw"></i> WAS List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item" v-for="server in serverList" :key="server.hostName">
-                            <i class="fas fa-server icon-lg icon-fw"></i>{{ server.hostName }}
-                        </a>
+                       <div v-for="server in serverList" :key="server.host_name" class="list-group-item">
+                           <a href="#" class="rainbow-button" v-bind:alt="server.host_name"></a>
+                       </div>
                     </div>
 
                     <hr>
                     
                     <!--WAS Menu-->
-                    <p class="pad-all text-main text-sm text-uppercase text-bold">WAS List</p>
+                    <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 1</a>
-                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 2</a>
-                        <a href="#" class="list-group-item"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 3</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="fab fa-chrome icon-lg icon-fw"></i> WAS 4</a>
+                       <div class="list-group-item">
+                            <a href="#" class="rainbow-button" alt="WAS 1"></a>
+                       </div>
+                       <div class="list-group-item">
+                            <a href="#" class="rainbow-button" alt="WAS 2"></a>
+                       </div>
+                       <div class="list-group-item">
+                            <a href="#" class="rainbow-button" alt="WAS 3"></a>
+                       </div>
+                       <div class="list-group-item">
+                            <a href="#" class="rainbow-button" alt="WAS 4"></a>
+                       </div>
                     </div>
-
+                    
                     <hr>
 
                     <!--Server Menu-->
-                    <p class="pad-all text-main text-sm text-uppercase text-bold">DB List</p>
+                    <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-database icon-lg icon-fw"></i> DB List</p>
                     <div class="list-group bg-trans">
-                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 1</a>
-                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 2</a>
-                        <a href="#" class="list-group-item"><i class="fas fa-database icon-lg icon-fw"></i> Database 3</a>
-                        <a href="#" class="list-group-item"><span class="label label-info pull-right">New</span><i class="fas fa-database icon-lg icon-fw"></i> Database 4</a>
+                       <div class="list-group-item">
+                           <a href="#" class="rainbow-button" alt="Database 1"></a>
+                       </div>
+                        <div class="list-group-item">
+                           <a href="#" class="rainbow-button" alt="Database 2"></a>
+                       </div>
+                       <div class="list-group-item">
+                           <a href="#" class="rainbow-button" alt="Database 3"></a>
+                       </div>
+                       <div class="list-group-item">
+                           <a href="#" class="rainbow-button" alt="Database 4"></a>
+                       </div>
                     </div>
                     
-                    <!-- <ul class="list-group pad-btm bg-trans">
-                        <li class="list-header">
-                            <p class="text-main text-sm text-uppercase text-bold mar-no">Public Settings</p>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="pull-right">
-                                <input class="toggle-switch" id="demo-switch-4" type="checkbox" checked>
-                                <label for="demo-switch-4"></label>
-                            </div>
-                            Online status
-                        </li>
-                        <li class="list-group-item">
-                            <div class="pull-right">
-                                <input class="toggle-switch" id="demo-switch-5" type="checkbox" checked>
-                                <label for="demo-switch-5"></label>
-                            </div>
-                            Show offline contact
-                        </li>
-                        <li class="list-group-item">
-                            <div class="pull-right">
-                                <input class="toggle-switch" id="demo-switch-6" type="checkbox" checked>
-                                <label for="demo-switch-6"></label>
-                            </div>
-                            Show my device icon
-                        </li>
-                    </ul> -->
-
                     <hr>
                     
                 </div>
             </div>
         </div>
     </div>
+</div>
 </template>
 
 
 <script>
 export default {
-    name: 'Fixedbar',
-    date() {
+    data () {
         return {
             serverList: []
         }
     },
+    created () {
+        this.requestServerList();
+    },
     methods: {
-        requestServerList: async function() {
-            await this.$http.get('/api/v1/management/server')
+        requestServerList: function() {
+            this.$http.get('/api/v1/management/server')
             .then((result) => {
-                this.serverList = result
-                console.log(this.serverList)
+                this.serverList = result.data
             });
         },
-    },
-    created() {
-        this.requestServerList();
     }
 }
 </script>
 
 <style scoped>
+.list-group-item {
+  padding: 4px;
+}
+a {
+  text-decoration:none;
+  color:#FFF;
+  margin-bottom: 1px;
+}
+.rainbow-button {
+/*
+  width:calc(18vw + 2px);
+  height:calc(4vw + 2px);
+*/
+  height: 40px;
+  background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 80%, #00C0FF 100%);
+  border-radius:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-transform:uppercase;
+  font-size:15px;
+  font-weight:bold;
+  padding: 2px;
+  border: none;
+  animation:slidebg 2s linear infinite;
+}
+.rainbow-button:after {
+  content:attr(alt);
+/*
+  width:18vw;
+  height:4vw;
+*/
+  width: 100%;
+  height: 36px;
+  background-color:#3d4553;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:5px;
+}
+/*
+.rainbow-button:hover {
+  animation:slidebg 2s linear infinite;
+}
+*/
 
+@keyframes slidebg {
+  to {
+    background-position:15vw;
+  }
+}
 </style>

@@ -41,8 +41,8 @@
                     </div>
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <button v-if="isClicked" type="button" class="btn btn-danger" @click="streamBtnClick">Stop Stream</button>
-                    <button v-else type="button" class="btn btn-success" @click="streamBtnClick">Stream Live</button>
+                    <button v-if="isClicked" type="button" class="btn btn-danger stop-btn" @click="streamBtnClick">Stop Stream</button>
+                    <button v-else type="button" class="btn btn-success play-btn" @click="streamBtnClick">Stream Live</button>
                 </div>
             </div>
         </div>
@@ -229,5 +229,77 @@ export default {
 
 #picker {
     color: black;
+}
+
+
+.play-btn {
+    box-shadow: 0px 0px 25px 3px rgba(146, 199, 85, 0.8);
+
+}
+.stop-btn {
+  /* width: 100px;
+  height: 100px; */
+/*   background: radial-gradient( rgba(255, 0, 128, 0.8) 60%, rgba(255, 255, 255, 1) 62%); */
+/*   border-radius: 50%; */
+  position: relative;
+  display: block;
+  /* margin: 100px auto; */
+  box-shadow: 0px 0px 25px 3px rgba(245, 81, 69, 0.8);
+}
+
+/* pulse wave */
+.stop-btn:before {
+  content: "";
+  position: absolute;
+  width: 160%;
+  height: 150%;
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
+  -webkit-animation: pulsate1 2s;
+  animation: pulsate1 2s;
+  -webkit-animation-direction: forwards;
+  animation-direction: forwards;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: steps;
+  animation-timing-function: steps;
+  opacity: 1;
+/*   border-radius: 50%; */
+  border: 5px solid rgba(255, 255, 255, .75);
+  top: -30%;
+  left: -30%;
+  background: rgba(198, 16, 0, 0);
+}
+
+@-webkit-keyframes pulsate1 {
+  0% {
+    -webkit-transform: scale(0.6);
+    transform: scale(0.6);
+    opacity: 1;
+    box-shadow: inset 0px 0px 25px 3px rgba(255, 255, 255, 0.75), 0px 0px 25px 10px rgba(255, 255, 255, 0.75);
+  }
+  100% {
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    opacity: 0;
+    box-shadow: none;
+
+  }
+}
+
+@keyframes pulsate1 {
+  0% {
+    -webkit-transform: scale(0.6);
+    transform: scale(0.6);
+    opacity: 1;
+    box-shadow: inset 0px 0px 25px 3px rgba(255, 255, 255, 0.75), 0px 0px 25px 10px rgba(255, 255, 255, 0.75);
+  }
+  100% {
+    -webkit-transform: scale(1, 1);
+    transform: scale(0.8);
+    opacity: 0;
+    box-shadow: none;
+
+  }
 }
 </style>
