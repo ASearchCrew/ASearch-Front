@@ -8,7 +8,8 @@
                 <!--================================-->
                 <div class="navbar-header">
                     <a href="/" class="navbar-brand" style="background-color: #2E343E">
-                        <!-- <img src="img/logo.png" alt="kt Logo" class="brand-icon"> -->
+                        <img src="/img/kt_ci.png" data-image="/img/kt_ci.png"> 
+                        <!-- alt="kt Logo" class="brand-icon" -->
                         <div class="brand-title">
                             <span class="brand-text">ASearch</span>
                         </div>

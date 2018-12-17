@@ -17,17 +17,17 @@
             <div class="ht-event-btns">
 
               <!-- <div v-for="server in serverList" :key="server.index" class="ht-event-btn stl1">  -->
-              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lasttime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
                 <router-link to="/logViewer">
-                  <div v-bind:class="[ server.lasttime==9999 ? 'flag dead' : 'flag' ]">
-                    <p v-if="server.lasttime==9999"><span id="aliveText">dead</span></p>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
+                    <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
                     <p v-else><span id="aliveText">alive</span></p>
                   </div>
-                  <p>{{server.host_name}}</p>
-                  <div v-bind:class="[ server.lasttime==9999 ? 'subH dead' : 'subH' ]">
-                    <p>{{server.host_ip}}<br><span style="color:grey">{{server.timestamp | frontDateFormat}}</span></p>
+                  <p>{{server.hostName}}</p>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'subH dead' : 'subH' ]">
+                    <p>{{server.hostIp}}<br><span style="color:grey">{{server.timeStamp | frontDateFormat}}</span></p>
                   </div>
-                  <div v-bind:class="[ server.lasttime==9999 ? 'loader loading dead' : 'loader loading' ]" ></div>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'loader loading dead' : 'loader loading' ]" ></div>
                 </router-link>
               </div>
 
@@ -281,7 +281,7 @@
           
         </div>
         <br>
-        <div id="chartdiv2" style="height:280px; margin-right:20px;">
+        <div id="chartdiv" style="height:280px; margin-right:20px;">
         </div>
         <br>
         <div style="background-color:#2E343E; padding:4px; border-radius: 8px; height:35px; width:100%; display:inline-block;;">
@@ -296,7 +296,7 @@
           
         <br>
         <!-- Chart Div -->
-        <div id="chartdiv" >
+        <div id="chartdiv2" >
         </div>
          
       </div>
@@ -438,6 +438,9 @@ export default {
       }],
       chartDataList : [
       ],
+      chartDataList2 : [
+
+      ],
       serverList : [
       ],
       sorting : -1,
@@ -458,13 +461,13 @@ export default {
   
   methods:{
     createChart1(){
-      let chart = am4core.create("chartdiv2", am4charts.XYChart);
+      let chart = am4core.create("chartdiv", am4charts.XYChart);
       
       let data = [];
-      for (var i = 9; i >= 0; i--) {
+      for (var i = 0; i <10; i++) {
         data.push({ date1: new Date(this.chartDataList[0].chartDatas[i].date), count1: this.chartDataList[0].chartDatas[i].count });
       }
-      for (var i = 9; i >= 0; i--) {
+      for (var i = 0; i <10; i++) {
         data.push({ date2: new Date(this.chartDataList[1].chartDatas[i].date), count2: this.chartDataList[1].chartDatas[i].count });
       }
       chart.data = data;
@@ -490,7 +493,7 @@ export default {
       valueAxis2.renderer.minWidth = 60;
 
       let series = chart.series.push(new am4charts.LineSeries());
-      series.name = this.chartDataList[0].server;
+      series.name = this.chartDataList[0].hostName;
       series.dataFields.dateX = "date1";
       series.dataFields.valueY = "count1";
       series.tooltipText = "{valueY.value}";
@@ -499,7 +502,7 @@ export default {
       series.strokeWidth = 3;
 
       let series2 = chart.series.push(new am4charts.LineSeries());
-      series2.name = this.chartDataList[1].server;
+      series2.name = this.chartDataList[1].hostName;
       series2.dataFields.dateX = "date2";
       series2.dataFields.valueY = "count2";
       // series2.yAxis = valueAxis2;
@@ -521,12 +524,16 @@ export default {
       dateAxis.renderer.grid.template.strokeOpacity = 0.07;
       valueAxis.renderer.grid.template.strokeOpacity = 0.07;
     },
-    createChart2(chart){
+    createChart2(){
+      let chart = am4core.create("chartdiv2", am4charts.XYChart);
       chart.data = this.chartData;
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;
       dateAxis.renderer.labels.template.fill = am4core.color("#fff");
+
+
+
       // dateAxis.renderer.minGridDistance = 60;
       // dateAxis.startLocation = 0.5;
       // dateAxis.endLocation = 0.5;
@@ -588,21 +595,16 @@ export default {
       chart.legend.position = "top";
     },
     addNewServer(){
-      // bootbox.dialog({
-      //     title: 'A custom dialog with init',
-      //     message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>'
-      // });
        
       this.$modal.show(PopupAddServer,{
-        hot_table : 'data',
-        modal : this.$modal },{
-        title: 'Server 추가',
-        name: 'dynamic-modal',
-        width : '300px',
-        height : '235px',
-        borderRadius : '8px',
-        draggable: true,
-        
+          hot_table : 'data',
+          modal : this.$modal },{
+          title: 'Server 추가',
+          name: 'dynamic-modal',
+          width : '300px',
+          height : '270px',
+          borderRadius : '8px',
+          draggable: true,        
       });
     },
     AddOneServer(param){
@@ -610,7 +612,7 @@ export default {
     },
     delServer(param, index){
       if(confirm("삭제 하시겠습니까?")){
-        const baseURI = 'http://192.168.0.7:8080'; //this.srvUrl;
+        const baseURI = this.srvUrl;
         this.$http.delete(`${baseURI}/api/v1/management/deleteserver?hostIp=`+param).then((result) => {
             console.log(result);
             this.serverList.splice(index,1);
@@ -625,19 +627,26 @@ export default {
     .then((result) => {
         console.log(result);
         this.serverList = result.data;
-        this.serverList = this.serverList.slice(0).sort((a, b) => a.lasttime < b.lasttime ? this.sorting : -this.sorting );
+        this.serverList = this.serverList.slice(0).sort((a, b) => a.lastTime < b.lastTime ? this.sorting : -this.sorting );
 
         this.$http.get(`${baseURI}/api/v1/management/datecount`)
         .then((result) => {
             this.chartDataList = result.data;
             this.chartDataList = this.chartDataList.slice(0).sort((a, b) => a.chartDatas[0].count < b.chartDatas[0].count ? -this.sorting : this.sorting );
-            console.log(this.chartDataList);
+            // console.log(this.chartDataList);
             this.createChart1();
+
+            this.$http.get(`${baseURI}/api/v1/management/keywordcount?hostName=123`)
+            .then((result) => {
+                this.chartDataList2 = result.data;
+                console.log("@@@@@@@@@@@@@");
+                console.log(this.chartDataList2);
+                
+                this.createChart2();
+            })
         });    
     });    
-    // Create chart
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
-    this.createChart2(chart);
+
 
     this.$EventBus.$on('closeAddModal', this.AddOneServer);
 

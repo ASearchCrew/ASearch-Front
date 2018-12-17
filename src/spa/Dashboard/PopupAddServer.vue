@@ -33,7 +33,7 @@ export default {
   },
   methods : {
     addServer(){
-        const baseURI = 'http://52.79.220.131:8080';
+        const baseURI = 'http://192.168.0.11:8080';
         this.$http.post(`${baseURI}/api/v1/management/server`,{
             hostName : this.hostName,
             hostIp : this.hostIp
@@ -53,7 +53,7 @@ export default {
   },
   beforeDestroy(){
     if(this.addEventFlag){
-        var serverParam = {"host_name":this.hostName, "host_ip":this.hostIp, "lasttime":9999, "timestamp":"Exception"};
+        var serverParam = {"hostName":this.hostName, "hostIp":this.hostIp, "lastTime":9999, "timeStamp":"Exception"};
             
         this.$EventBus.$emit('closeAddModal',serverParam);
     }
