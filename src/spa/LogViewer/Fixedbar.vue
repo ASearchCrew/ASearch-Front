@@ -7,8 +7,8 @@
                     <!--Server Menu-->
                     <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-server icon-lg icon-fw"></i> WAS List</p>
                     <div class="list-group bg-trans">
-                       <div v-for="server in serverList" :key="server.host_name" class="list-group-item">
-                           <a href="#" class="rainbow-button" v-bind:alt="server.host_name"></a>
+                       <div v-for="server in serverList" :key="server.hostName" class="list-group-item">
+                           <a href="#" class="rainbow-button" v-bind:alt="server.hostName"></a>
                        </div>
                     </div>
 

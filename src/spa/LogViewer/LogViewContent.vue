@@ -4,9 +4,9 @@
     <div id="page-content">
         <div class="msIpy">
             <div class="kJLsxp">
-                <div class="cSbckb" style="height: 540px; width: 100%;" @mousewheel="moveWheel">
+                <div class="cSbckb" style="height: 540px; width: 100%;" >
                   <div class="nano">
-                    <div class="nano-content">
+                    <div id="log-contents" class="nano-content" @mousewheel="moveWheel">
                     <!-- <transition-group name="list" tag="ul" class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
                             <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
@@ -14,14 +14,35 @@
                             <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)>{{ result.message }}</div>
                         </li>
                     </transition-group> -->
-                      <ul class="timeline-custom">
-                          <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                              <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
-                              <div class="timeline-icon-custom"><a href="#"></a></div>
-                              <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)">{{ result.message }}</div>
-                          </li>
+                      <ul v-if="!noData" class="timeline-custom">
+                        <div v-if="!isBeforeData">No Additional Data</div>
+                        <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
+                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
+                            <div class="timeline-icon-custom"><a href="#"></a></div>
+                            <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id, result.timeStamp)">{{ result.message }}</div>
+                        </li>
+                        <div v-if="!isAfterData">No Additional Data</div>
                       </ul>
                       
+                      <!-- <div v-else> -->
+                      <div v-else class="cls-container">
+                        <div  class="cls-content">
+                            <h1 class="error-code text-info">404</h1>
+                            <p class="h4 text-uppercase text-bold">There is no data!</p>
+                            <div class="pad-btm">
+                                Sorry, but the page you are looking for has not been found on our server.
+                            </div>
+                            <!-- <div class="row mar-ver">
+                                <form class="col-xs-12 col-sm-10 col-sm-offset-1" method="post" action="pages-search-results.html">
+                                    <input type="text" placeholder="Search.." class="form-control error-search">
+                                </form>
+                            </div> -->
+                            <hr class="new-section-sm bord-no">
+                            <div class="pad-top"><a class="btn btn-primary" href="index.html">Return Home</a></div>
+                        </div>
+                      </div>
+                      <!-- </div> -->
+                      <log-detail-view />
                     </div>
                   </div>
                 </div>
@@ -32,7 +53,12 @@
     <!--End page content-->
 </template>
 <script>
+import LogDetailView from './LogDetailView.vue'
+
 export default {
+  components: {
+    LogDetailView
+  },
   data() {
     return {
       query: '',
@@ -44,8 +70,9 @@ export default {
       dateReceived: true,
       count: 0,
       offset: 0,
-      time2: 0,
-      duration: 5000
+      isBeforeData: true,
+      isAfterData: true,
+      noData: false,
     }
   },
   created() {
@@ -77,16 +104,19 @@ export default {
       this.$modal.hide('hello-world');
     },
     async moveWheel(event){
-      var container = document.querySelector(".cSbckb");
+      if(this.noData)
+        return;
+      var container = document.querySelector(".timeline-custom");
       var entScrollHeight = container.scrollHeight;
-      var curScrollHeight = container.scrollTop;
-      var offset = container.offsetHeight;
+      var curScrollHeight = $("#log-contents").scrollTop();
+      var offset = $("#log-contents").outerHeight();
       
       //scroll Up
-      if(curScrollHeight === 0 && event.wheelDelta > 0 && this.dateReceived){
+      if(curScrollHeight === 0 && event.wheelDelta > 0 && this.dateReceived && !this.isClicked){
         console.log('over Wheel Up');
         var t = new Date(this.results[0].timeStamp)
         var myDate = t.getTime();
+        var id = this.results[0].id;
         console.log(this.query);
         this.offset++;
         let config = this.query.length > 0 ? {
@@ -97,7 +127,8 @@ export default {
             search: this.query,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat'
+            hostName: 'filebeat',
+            id: id
           }
         }:{
           params: {
@@ -106,7 +137,8 @@ export default {
             time: myDate,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat'
+            hostName: 'filebeat',
+            id: id
           }
         }
         this.dateReceived = false
@@ -114,6 +146,12 @@ export default {
         .then((result) => {
           console.log(result)
           this.tmp = result.data.logs;
+          if(this.tmp.length > 0){
+            this.isBeforeData = true;
+          }else{
+            this.isBeforeData = false;
+            return;
+          }
           this.count = result.data.sumCount;
           for(var i = 0; i < this.tmp.length; i++){
             this.results.unshift(this.tmp[i]);
@@ -122,11 +160,13 @@ export default {
           this.dateReceived = !this.dateReceived
         })
       }
+      
       //scroll Down
-      if(offset + curScrollHeight === entScrollHeight && event.wheelDelta < 0 && this.dateReceived){
+      if(offset + curScrollHeight === entScrollHeight && event.wheelDelta < 0 && this.dateReceived && !this.isClicked){
         console.log('over Wheel Down');
         var t = new Date(this.results[this.results.length-1].timeStamp)
         var myDate = t.getTime();
+        var id = this.results[this.results.length-1].id;
         console.log(this.query);
         this.offset--;  
         let config = this.query.length > 0 ? {
@@ -136,7 +176,9 @@ export default {
             isStream: false,
             search: this.query,
             initialCount: this.count,
-            offset: this.offset
+            upScrollOffset: this.offset,
+            hostName: 'filebeat',
+            id: id
           }
         }:{
           params: {
@@ -144,7 +186,9 @@ export default {
             isStream: false,
             time: myDate,
             initialCount: this.count,
-            offset: this.offset
+            upScrollOffset: this.offset,
+            hostName: 'filebeat',
+            id: id
           }
         }
         this.dateReceived = false
@@ -152,6 +196,12 @@ export default {
         .then((result) => {
           this.tmp = result.data.logs;
           this.count = result.data.sumCount;
+          if(this.tmp.length > 0){
+            this.isAfterData = true;
+          }else{
+            this.isAfterData = false;
+            return;
+          }
           for(var i = 0; i < this.tmp.length; i++){
             this.results.push(this.tmp[i]);
           }
@@ -160,18 +210,18 @@ export default {
         })
       }
     },
-    async showDetail(id){
-      await this.$http.get(`/api/v1/log/${id}`)
+    showDetail(id, timeStamp){
+      this.$http.get(`/api/v1/log/${id}`)
       .then((result) => {
         console.log(result);
+        this.$modal.show('log-detail-view', { 'logInfo': result, 'timeStamp': timeStamp})
       })
-
-      this.$modal.show('hello-world', { result: this.result })
     },
     mouseInCell(event){
       // console.log(event.currentTarget.childNodes[2].style);
       event.currentTarget.childNodes[0].style.fontWeight="bold";
       event.currentTarget.childNodes[2].style.fontWeight="bold";
+      event.currentTarget.childNodes[2].style.cursor="pointer";
       
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
@@ -215,35 +265,93 @@ export default {
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
-        // this.results = result.data.logs;
-        this.results = result.data;
+        this.tmp = result.data.logs;
+        if(this.tmp.length > 0){
+          this.noData = false;
+        }else{
+          this.noData = true;
+          return;
+        }
+        for(var i = 0; i < this.tmp.length; i++){
+          this.results.unshift(this.tmp[i]);
+        }
+        console.log(this.results)
         this.count = result.data.sumCount;
       })
       this.scrollToEnd();
     },
     requestStream: async function() {
-        var t = new Date(this.results[this.results.length-1].timeStamp)
-        var myDate = t.getTime();
+      var t = new Date(this.results[this.results.length-1].timeStamp)
+      var myDate = t.getTime();
+      var id = this.results[this.results.length-1].id;
       await this.$http.get('/api/v1/log', {
         params: {
-          direction: 'down',
+          direction: 'stream',
           isStream: true,
-          time: myDate
+          time: myDate,
+          initialCount: 0,
+          upScrollOffset: 0,
+          hostName: 'filebeat',
+          id: id
         }
       })
       .then((result) => {
-        console.log(result);
         this.tmp = result.data.logs;
         this.count = result.data.sumCount;
-        for(var i = 0; i < this.tmp.length; i++){
-          this.results.push(this.tmp[i]);
-        }
         console.log(this.tmp)
+        if(this.tmp.length < 100){
+          for(var i = 0; i < this.tmp.length; i++){
+            this.results.push(this.tmp[i]);
+          }
+        }else{
+          this.results = this.tmp;
+        }
+        
       })
       if(this.isClicked)
         this.scrollToEnd();
     },
-    startStream: function() {
+    startStream: async function() {
+      var t = new Date();
+      var myDate = t.getTime();
+      let config = this.query.length > 0 ? {
+        params: {
+          direction: 'center',
+          time: myDate,
+          isStream: true,
+          search: this.query,
+          initialCount: 0,
+          upScrollOffset: 0,
+          hostName: 'filebeat'
+        }
+      }:{
+        params: {
+          direction: 'center',
+          time: myDate,
+          isStream: true,
+          initialCount: 0,
+          upScrollOffset: 0,
+          hostName: 'filebeat'
+        }
+      }
+      await this.$http.get('/api/v1/log', config)
+      .then((result) => {
+        this.tmp = result.data.logs;
+        this.results = [];
+        if(this.tmp.length > 0){
+          this.noData = false;
+        }else{
+          this.noData = true;
+          return;
+        }
+        for(var i = 0; i < this.tmp.length; i++){
+          this.results.unshift(this.tmp[i]);
+        }
+        console.log(this.results)
+        this.count = result.data.sumCount;
+        this.scrollToEnd();
+      })
+      
       this.interval = setInterval(this.requestStream, 3000)
     },
     stopStream: function() {
@@ -251,8 +359,8 @@ export default {
     },
     async setQuery(query) {
       this.query = query;
-      var t = new Date(this.results[this.results.length-1].timeStamp)
-      var myDate = t.getTime();
+      // var t = new Date(this.results[this.results.length-1].timeStamp)
+      var myDate = (new Date()).getTime();
       let config = this.query.length > 0 ? {
         params: {
           direction: 'center',
@@ -260,7 +368,8 @@ export default {
           isStream: false,
           search: this.query,
           initialCount: this.count,
-          upScrollOffset: 0
+          upScrollOffset: 0,
+          hostName: 'filebeat'
         }
       }:{
         params: {
@@ -268,25 +377,36 @@ export default {
           isStream: false,
           time: myDate,
           initialCount: this.count,
-          upScrollOffset: 0
+          upScrollOffset: 0,
+          hostName: 'filebeat'
         }
       }
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
-        this.results = result.data.logs;
+        this.tmp = result.data.logs;
+        if(this.tmp.length > 0){
+          this.noData = false;
+        }else{
+          this.noData = true;
+          return;
+        }
+        this.results = [];
+        for(var i = 0; i < this.tmp.length; i++){
+          this.results.unshift(this.tmp[i])
+        }
         this.count = result.data.sumCount;
-        console.log('sumcount : ' + this.count)
       })
-      this.scrollToEnd();
+      if(!this.noData)
+        this.scrollToEnd();
     },
     setTime(time) {
       this.time = time;
     },
     scrollToEnd() {
-      var container = document.querySelector(".cSbckb");
-      var scrollHeight = container.scrollHeight;
-      container.scrollTop = scrollHeight;
+      var container = document.querySelector(".timeline-custom");
+      var entScrollHeight = container.scrollHeight;
+      $("#log-contents").scrollTop(entScrollHeight);
     },
     beforeEnter: function(el) {
       el.style.opacity = 0
