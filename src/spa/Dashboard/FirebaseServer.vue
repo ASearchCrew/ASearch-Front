@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { askForPermissioToReceiveNotifications } from '../../../public/js/push-notification';
+import {askForPermissioToReceiveNotifications} from '../../../public/js/push-notification';
 
 export default {
   data:function(){

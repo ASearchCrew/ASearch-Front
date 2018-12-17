@@ -1,14 +1,12 @@
 import firebase from 'firebase';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const config = {
-  apiKey: process.env.FCM_APIKEY,
-  authDomain: process.env.FCM_AUTHDOMAIN,
-  databaseURL: process.env.FCM_DATABASEURL,
-  projectId: process.env.FCM_PROJECTID,
-  storageBucket: process.env.FCM_STORAGEBUCKET,
-  messagingSenderId: process.env.FCM_MESSAGINGSENDERID 
+  apiKey: process.env.VUE_APP_FCM_APIKEY,
+  authDomain: process.env.VUE_APP_FCM_AUTHDOMAIN,
+  databaseURL: process.env.VUE_APP_FCM_DATABASEURL,
+  projectId: process.env.VUE_APP_FCM_PROJECTID,
+  storageBucket: process.env.VUE_APP_FCM_STORAGEBUCKET,
+  messagingSenderId: process.env.VUE_APP_FCM_MESSAGINGSENDERID 
  }
 
 firebase.initializeApp(config);
@@ -21,7 +19,7 @@ navigator.serviceWorker
 console.log("★★Firebase★★");
 
 const messaging = firebase.messaging();
-messaging.usePublicVapidKey(process.env.FCM_PUBLICVAPIDKEY);
+messaging.usePublicVapidKey(process.env.VUE_APP_FCM_PUBLICVAPIDKEY);
 
 messaging.requestPermission().then(function() {
   console.log('Notification permission granted.');

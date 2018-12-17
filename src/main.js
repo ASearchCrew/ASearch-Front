@@ -3,6 +3,9 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './routes'
 import VModal from 'vue-js-modal'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 Vue.use(VueRouter);
 
