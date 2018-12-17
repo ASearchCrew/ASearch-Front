@@ -1,295 +1,160 @@
 <template>
   <!--Page content-->
   <!--===================================================-->
-<div id="content-container" style="background-color: #0b1521;">
-  <div class="fluid faq-accordion">
+<div id="content-container" style="background-color: #0b1521; overflow-x:auto; max-height:934px; margin-left:55px">
+  <div class="fluid faq-accordion" style="">
 
+    <div style="display:inline-flex;">
+      <div id="btnGroup" >
         <!-- GENERAL -->
         <!--===================================================-->
-        <div class="panelCustom">
+
           <div class="panel-heading">
             <p class="panel-title"><i @click="click1=!click1" href="#toggleDiv-1" data-toggle="collapse" v-bind:class="[ click1 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]"></i>&nbsp; WEB</p>
           </div>
 
-          <div class="panel-collapse collapse in" id="toggleDiv-1" style="padding-left:40px;">
-            <div class="row">
-                <div class="col-md-9" style="width:1220px; ">
-                  <div class="ht-event-btns">
+          <div class="panel-collapse collapse in" id="toggleDiv-1" style="">
+            <div class="ht-event-btns">
 
-                        <div class="ht-event-btn stl1">
-                          <router-link to="/logViewer">
-                          <div class="flag">
-                              <span>Server 1</span>
-                          </div>
-                          <p>File beat</p>
-                          <div class="subH">
-                            <p>file live flow sdfsli sdf</p>
-                          </div>
-                          <div class="loader loading"></div>
-                        </router-link>
-
-                        </div>
-
-                      <div class="ht-event-btn stl2">
-                        <div class="flag">
-                            <span>Server 2</span>
-                        </div>
-                        <p>Elastic search</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl3" >
-                        <div class="flag">
-                            <span>Server 3</span>
-                        </div>
-                        <p>Logstash</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl4">
-                        <div class="flag">
-                            <span>Server 4</span>
-                        </div>
-                        <p>Kibana</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl5">
-                        <div class="flag">
-                            <span>Server 5</span>
-                        </div>
-                        <p>Kafka</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                    </div> <!--ht-event-btns end-->
-                  <div class="ht-event-btns">
-                    <div class="ht-event-btn stl5">
-                      <div class="flag">
-                          <span>Server 5</span>
-                      </div>
-                      <p>File beat</p>
-                      <div class="subH">
-                        <p>file live flow sdfsli sdf</p>
-                      </div>
-                      <div class="loader loading"></div>
-                    </div>
-
-                    <div class="ht-event-btn">
-                      <div class="flag dead">
-                          <span>Server 6</span>
-                      </div>
-                      <p>Elastic search</p>
-                      <div class="subH dead">
-                        <p>file live flow sdfsli sdf</p>
-                      </div>
-                      <div class="loader loading dead"></div>
-                    </div>
-
-                    <div class="ht-event-btn stl7" >
-                      <div class="flag">
-                          <span>Server 7</span>
-                      </div>
-                      <p>Logstash</p>
-                      <div class="subH">
-                        <p>file live flow sdfsli sdf</p>
-                      </div>
-                      <div class="loader loading"></div>
-                    </div>
-
-                    <div class="ht-event-btn">
-                      <div class="flag dead">
-                          <span>Server 8</span>
-                      </div>
-                      <p>Kibana</p>
-                      <div class="subH dead">
-                        <p>file live flow sdfsli sdf</p>
-                      </div>
-                      <div class="loader loading dead"></div>
-                    </div>
-
-                    <div class="ht-event-btn">
-                      <div class="flag dead">
-                          <span>Server 8</span>
-                      </div>
-                      <p>Kibana</p>
-                      <div class="subH dead">
-                        <p>file live flow sdfsli sdf</p>
-                      </div>
-                      <div class="loader loading dead"></div>
-                    </div>
-
-
-                  </div> <!--ht-event-btns end-->
-                </div> <!--Div:End col-md-9-->
-
-                <div class="col-md-4" style="width:500px;">
-                  <!-- Chart Div -->
-                  <div id="chartdiv" style="height:280px;">
+              <!-- <div v-for="server in serverList" :key="server.index" class="ht-event-btn stl1">  -->
+              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lasttime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+                <router-link to="/logViewer">
+                  <div v-bind:class="[ server.lasttime==9999 ? 'flag dead' : 'flag' ]">
+                    <p v-if="server.lasttime==9999"><span id="aliveText">dead</span></p>
+                    <p v-else><span id="aliveText">alive</span></p>
                   </div>
-                </div><!--Div:End col-md-5-->
+                  <p>{{server.host_name}}</p>
+                  <div v-bind:class="[ server.lasttime==9999 ? 'subH dead' : 'subH' ]">
+                    <p>{{server.host_ip}}<br><span style="color:grey">{{server.timestamp | frontDateFormat}}</span></p>
+                  </div>
+                  <div v-bind:class="[ server.lasttime==9999 ? 'loader loading dead' : 'loader loading' ]" ></div>
+                </router-link>
+              </div>
 
-            </div><!--Div:End row-->
+              <div class="ht-event-btn add" @click="addNewServer()">
+                <div class="panel-body demo-nifty-btn" style="text-align:center; padding-top:45px;">
+                  <i class="fa fa-plus icon-3x"></i>
+                  <div>add</div>
+                </div>
+              </div>
+
+            </div> <!--ht-event-btns end-->
+            
+            
           </div><!--Div:End toggleDiv-1-->
-        </div><!--Div:End panelCustom1-->
 
-        <div class="panelCustom">
+
+
           <div class="panel-heading">
             <p class="panel-title">
               <i @click="click2=!click2" href="#toggleDiv-2" data-toggle="collapse" v-bind:class="[ click2 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]">
               </i>&nbsp; WAS
             </p>
           </div>
-          <div class="panel-collapse collapse in" id="toggleDiv-2" style="padding-left:40px; padding-bottom:0px;">
-              <div class="row">
-                <div class="col-md-9" style="width:1220px; ">
-                    <div class="ht-event-btns">
-                      <div class="ht-event-btn stl1">
-                        <div class="flag">
-                            <span>Server 1</span>
-                        </div>
-                        <p>File beat</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
+          <div class="panel-collapse collapse in" id="toggleDiv-2" style="">
 
-                      <div class="ht-event-btn stl2">
-                        <div class="flag">
-                            <span>Server 2</span>
-                        </div>
-                        <p>Elastic search</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl3" >
-                        <div class="flag">
-                            <span>Server 3</span>
-                        </div>
-                        <p>Logstash</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl4">
-                        <div class="flag">
-                            <span>Server 4</span>
-                        </div>
-                        <p>Kibana</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl3">
-                        <div class="flag">
-                            <span>Server 4</span>
-                        </div>
-                        <p>Kibana</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                    </div> <!--ht-event-btns end-->
-                    <div class="ht-event-btns">
-                      <div class="ht-event-btn stl5">
-                        <div class="flag">
-                            <span>Server 5</span>
-                        </div>
-                        <p>File beat</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn">
-                        <div class="flag dead">
-                            <span>Server 6</span>
-                        </div>
-                        <p>Elastic search</p>
-                        <div class="subH dead">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading dead"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl7" >
-                        <div class="flag">
-                            <span>Server 7</span>
-                        </div>
-                        <p>Logstash</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-
-                      <div class="ht-event-btn">
-                        <div class="flag dead">
-                            <span>Server 8</span>
-                        </div>
-                        <p>Kibana</p>
-                        <div class="subH dead">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading dead"></div>
-                      </div>
-
-                      <div class="ht-event-btn stl3">
-                        <div class="flag">
-                            <span>Server 10</span>
-                        </div>
-                        <p>Kibana</p>
-                        <div class="subH">
-                          <p>file live flow sdfsli sdf</p>
-                        </div>
-                        <div class="loader loading"></div>
-                      </div>
-                    </div> <!--ht-event-btns end-->
-                </div> <!--Div:End col-md-8-->
-
-                <div class="col-md-5" style="width:500px;">
-                  <!-- Chart Div -->
-                  <div id="chartdiv2" style="height:280px;">
-                  </div>
-                </div><!--Div:End col-md-5-->
-
+            <div class="ht-event-btns">
+              <div class="ht-event-btn stl1">
+                <div class="flag">
+                    <span>alive</span>
+                </div>
+                <p>File beat</p>
+                <div class="subH">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading"></div>
               </div>
-            </div>
-        </div><!--Div:End panelCustom2-->
 
-        <div class="panelCustom">
+              <div class="ht-event-btn stl2">
+                <div class="flag">
+                    <span>alive</span>
+                </div>
+                <p>Elastic search</p>
+                <div class="subH">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading"></div>
+              </div>
+
+              <div class="ht-event-btn stl3" >
+                <div class="flag">
+                    <span>alive</span>
+                </div>
+                <p>Logstash</p>
+                <div class="subH">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading"></div>
+              </div>
+
+              <div class="ht-event-btn stl4">
+                <div class="flag">
+                    <span>alive</span>
+                </div>
+                <p>Kibana</p>
+                <div class="subH">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading"></div>
+              </div>
+
+              <div class="ht-event-btn stl3">
+                <div class="flag">
+                    <span>alive</span>
+                </div>
+                <p>Kibana</p>
+                <div class="subH">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading"></div>
+              </div>
+
+              <div class="ht-event-btn">
+                <div class="flag dead">
+                    <span>dead</span>
+                </div>
+                <p>Kibana</p>
+                <div class="subH dead">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading dead"></div>
+              </div>
+
+              <div class="ht-event-btn">
+                <div class="flag dead">
+                    <span>dead</span>
+                </div>
+                <p>Kibana</p>
+                <div class="subH dead">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading dead"></div>
+              </div>
+
+              <div class="ht-event-btn">
+                <div class="flag dead">
+                    <span>dead</span>
+                </div>
+                <p>Kibana</p>
+                <div class="subH dead">
+                  <p>file live flow sdfsli sdf</p>
+                </div>
+                <div class="loader loading dead"></div>
+              </div>
+            </div> <!--ht-event-btns end-->
+          </div>
+
+
+
           <div class="panel-heading">
               <p class="panel-title">
                 <i @click="click3=!click3" href="#toggleDiv-3" data-toggle="collapse" v-bind:class="[ click3 ? 'fa fa-minus-square' : 'fa fa-plus-square' ]">
                 </i>&nbsp; DB
               </p>
           </div>
-          <div class="panel-collapse collapse" id="toggleDiv-3" style="padding-left:40px; padding-bottom:0px;">
-            <div class="row">
-              <div class="col-md-9" style="width:1220px; ">
+          <div class="panel-collapse collapse" id="toggleDiv-3" style="padding-bottom:0px;">
+    
+              
                 <div class="ht-event-btns">
                   <div class="ht-event-btn stl1">
                     <div class="flag">
@@ -405,20 +270,43 @@
                   </div>
 
                 </div> <!--ht-event-btns end-->
-              </div> <!--Div:End col-md-9-->
-              <div class="col-md-4" style="width:500px;">
-                <!-- Chart Div -->
-                <div id="chartdiv3" style="height:280px;">
-                </div>
-              </div><!--Div:End col-md-5-->
-            </div><!--Div:End row-->
+              
+              
           </div><!--Div:End toggleDiv-3-->
-        </div><!--Div:End panelCustom3-->
 
-    </div><!--Div:End fluid faq-accordion-->
+      </div>
+
+      <div id="chartGroup">
+        <div style="background-color:#2E343E; padding:4px; border-radius: 8px; height:35px;"><p style="font-size : 20px; text-align:left; padding-left:10px">Log Count</p>
+          
+        </div>
+        <br>
+        <div id="chartdiv2" style="height:280px; margin-right:20px;">
+        </div>
+        <br>
+        <div style="background-color:#2E343E; padding:4px; border-radius: 8px; height:35px; width:100%; display:inline-block;;">
+
+            <div class="media-body"><p style="font-size : 20px; text-align:left; padding-left:10px;">Keyword Count</p></div>
+            <!-- <div style="float:left; "><i class="fa fa-plus"></i></div> -->
+            <div class="media-right textright">
+                <i class="demo-pli-mine icon-lg icon-fw"></i>
+            </div>
+        </div>
+        
+          
+        <br>
+        <!-- Chart Div -->
+        <div id="chartdiv" >
+        </div>
+         
+      </div>
+    </div>
+  </div><!--Div:End fluid faq-accordion-->
+   <modals-container :visibleModal.sync="visibleModal" />
 </div>
   <!--===================================================-->
   <!--End page content-->
+  
 </template>
 
 <!--jQuery [ REQUIRED ]-->
@@ -434,11 +322,14 @@
 <!--Specify page [ SAMPLE ]-->
 <script src="js/demo/dashboard-2.js"></script>
 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
+
 <script>
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_dark from "@amcharts/amcharts4/themes/dark";
+import PopupAddServer from './PopupAddServer.vue';
 
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
@@ -544,11 +435,93 @@ export default {
         "cars": 1159,
         "motorcycles": 277,
         "bicycles": 71
-      }]
+      }],
+      chartDataList : [
+      ],
+      serverList : [
+      ],
+      sorting : -1,
+      visibleModal :false,
+      srvUrl : 'http://192.168.0.7:8080' // 창호
+      // 'http://52.79.220.131:8080'; // 배포
+      // 'http://192.168.0.11:8080'; // 우영
     }
   },
+  filters:{
+    frontDateFormat(value) {
+      if("Exception"== value){
+        return "Exception";
+      }
+      else return moment(value).format('YYYY-MM-DD HH:mm:ss');
+    }
+  },
+  
   methods:{
-    createChart1(chart){
+    createChart1(){
+      let chart = am4core.create("chartdiv2", am4charts.XYChart);
+      
+      let data = [];
+      for (var i = 9; i >= 0; i--) {
+        data.push({ date1: new Date(this.chartDataList[0].chartDatas[i].date), count1: this.chartDataList[0].chartDatas[i].count });
+      }
+      for (var i = 9; i >= 0; i--) {
+        data.push({ date2: new Date(this.chartDataList[1].chartDatas[i].date), count2: this.chartDataList[1].chartDatas[i].count });
+      }
+      chart.data = data;
+
+      let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.labels.template.fill = am4core.color("#427691");
+
+      let dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
+      dateAxis2.renderer.grid.template.location = 0;
+      dateAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
+
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.tooltip.disabled = true;
+      valueAxis.renderer.labels.template.fill = am4core.color("#427691");
+
+      valueAxis.renderer.minWidth = 60;
+
+      let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis2.tooltip.disabled = true;
+      valueAxis2.renderer.grid.template.strokeDasharray = "2,3";
+      valueAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
+      valueAxis2.renderer.minWidth = 60;
+
+      let series = chart.series.push(new am4charts.LineSeries());
+      series.name = this.chartDataList[0].server;
+      series.dataFields.dateX = "date1";
+      series.dataFields.valueY = "count1";
+      series.tooltipText = "{valueY.value}";
+      series.fill = am4core.color("#427691");
+      series.stroke = am4core.color("#427691");
+      series.strokeWidth = 3;
+
+      let series2 = chart.series.push(new am4charts.LineSeries());
+      series2.name = this.chartDataList[1].server;
+      series2.dataFields.dateX = "date2";
+      series2.dataFields.valueY = "count2";
+      // series2.yAxis = valueAxis2;
+      // series2.xAxis = dateAxis2;
+      series2.tooltipText = "{valueY.value}";
+      series2.fill = am4core.color("#6771DC");
+      series2.stroke = am4core.color("#6771DC");
+      series2.strokeWidth = 3;
+
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.xAxis = dateAxis;
+
+      chart.legend = new am4charts.Legend();
+      chart.legend.parent = chart.plotContainer;
+      chart.legend.zIndex = 100;
+
+      valueAxis2.renderer.grid.template.strokeOpacity = 0.07;
+      dateAxis2.renderer.grid.template.strokeOpacity = 0.07;
+      dateAxis.renderer.grid.template.strokeOpacity = 0.07;
+      valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+    },
+    createChart2(chart){
       chart.data = this.chartData;
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
@@ -614,89 +587,71 @@ export default {
       chart.legend = new am4charts.Legend();
       chart.legend.position = "top";
     },
-    createChart2(){
-      // Create chart
-      let chart = am4core.create("chartdiv2", am4charts.XYChart);
-
-      let data = [];
-      let price1 = 1000, price2 = 1200;
-      let quantity = 30000;
-      for (var i = 0; i < 360; i++) {
-        price1 += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 100);
-        data.push({ date1: new Date(2015, 0, i), price1: price1 });
-      }
-      for (var i = 0; i < 360; i++) {
-        price2 += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 100);
-        data.push({ date2: new Date(2017, 0, i), price2: price2 });
-      }
-
-      chart.data = data;
-
-      let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis.renderer.grid.template.location = 0;
-      dateAxis.renderer.labels.template.fill = am4core.color("#427691");
-
-      let dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis2.renderer.grid.template.location = 0;
-      dateAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
-
-      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis.tooltip.disabled = true;
-      valueAxis.renderer.labels.template.fill = am4core.color("#427691");
-
-      valueAxis.renderer.minWidth = 60;
-
-      let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis2.tooltip.disabled = true;
-      valueAxis2.renderer.grid.template.strokeDasharray = "2,3";
-      valueAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
-      valueAxis2.renderer.minWidth = 60;
-
-      let series = chart.series.push(new am4charts.LineSeries());
-      series.name = "2016";
-      series.dataFields.dateX = "date1";
-      series.dataFields.valueY = "price1";
-      series.tooltipText = "{valueY.value}";
-      series.fill = am4core.color("#427691");
-      series.stroke = am4core.color("#427691");
-      //series.strokeWidth = 3;
-
-      let series2 = chart.series.push(new am4charts.LineSeries());
-      series2.name = "2017";
-      series2.dataFields.dateX = "date2";
-      series2.dataFields.valueY = "price2";
-      series2.yAxis = valueAxis2;
-      series2.xAxis = dateAxis2;
-      series2.tooltipText = "{valueY.value}";
-      series2.fill = am4core.color("#6771DC");
-      series2.stroke = am4core.color("#6771DC");
-      //series2.strokeWidth = 3;
-
-      chart.cursor = new am4charts.XYCursor();
-      chart.cursor.xAxis = dateAxis2;
-
-      chart.legend = new am4charts.Legend();
-      chart.legend.parent = chart.plotContainer;
-      chart.legend.zIndex = 100;
-
-      valueAxis2.renderer.grid.template.strokeOpacity = 0.07;
-      dateAxis2.renderer.grid.template.strokeOpacity = 0.07;
-      dateAxis.renderer.grid.template.strokeOpacity = 0.07;
-      valueAxis.renderer.grid.template.strokeOpacity = 0.07;
+    addNewServer(){
+      // bootbox.dialog({
+      //     title: 'A custom dialog with init',
+      //     message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>'
+      // });
+       
+      this.$modal.show(PopupAddServer,{
+        hot_table : 'data',
+        modal : this.$modal },{
+        title: 'Server 추가',
+        name: 'dynamic-modal',
+        width : '300px',
+        height : '235px',
+        borderRadius : '8px',
+        draggable: true,
+        
+      });
+    },
+    AddOneServer(param){
+      this.serverList.push(param);
+    },
+    delServer(param, index){
+      if(confirm("삭제 하시겠습니까?")){
+        const baseURI = 'http://192.168.0.7:8080'; //this.srvUrl;
+        this.$http.delete(`${baseURI}/api/v1/management/deleteserver?hostIp=`+param).then((result) => {
+            console.log(result);
+            this.serverList.splice(index,1);
+        });    
+      }      
     }
   },
   mounted(){
+    const baseURI = this.srvUrl;
+    // this.$http.get(`${baseURI}/api/v1/management/logcount`)
+    this.$http.get(`${baseURI}/api/v1/management/servertime`)
+    .then((result) => {
+        console.log(result);
+        this.serverList = result.data;
+        this.serverList = this.serverList.slice(0).sort((a, b) => a.lasttime < b.lasttime ? this.sorting : -this.sorting );
+
+        this.$http.get(`${baseURI}/api/v1/management/datecount`)
+        .then((result) => {
+            this.chartDataList = result.data;
+            this.chartDataList = this.chartDataList.slice(0).sort((a, b) => a.chartDatas[0].count < b.chartDatas[0].count ? -this.sorting : this.sorting );
+            console.log(this.chartDataList);
+            this.createChart1();
+        });    
+    });    
     // Create chart
     let chart = am4core.create("chartdiv", am4charts.XYChart);
-    this.createChart1(chart);
+    this.createChart2(chart);
 
-    this.createChart2();
+    this.$EventBus.$on('closeAddModal', this.AddOneServer);
 
-    let chart2 = am4core.create("chartdiv3", am4charts.XYChart);
-    this.createChart1(chart2);
   },
   create(){
-
+    
+  },
+  computed : {
+    // visibleModal () {
+    //   if(!visibleModal){
+    //     alert();
+    //     // searchServerList();
+    //   }
+    // }
   },
   beforeDestroy() {
     if (this.chart) {
@@ -708,37 +663,42 @@ export default {
 </script>
 
 <style scoped>
-div.row-line {
-  display:inline-block;
+#btnGroup {
+  width:1320px;
 }
 
-.panelCustom {
-  border-radius: 3px;
-  border: 0;
-  box-shadow: none !important;
-  margin-bottom: 20px;
+#chartGroup {
+  margin-top:30px;
+  width:450px;
+  padding : 10px;
+  background-color: #04080D;
+  height: 820px;
+}
+
+div.row-line {
+  display:inline-block;
 }
 
 div .ht-event-btns {
 
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex;
+    /* display: flex;
     -webkit-box-pack: center;
-    -ms-flex-pack: center;
+    -ms-flex-pack: center; */
     justify-content: left;
+    display:inline-flex;
 
-    width: 1220px;
-    height: 140px;
+    flex-flow:row wrap;
+    width: 1300px;
 }
 
 div .ht-event-btns .ht-event-btn {
 
     position: relative;
-    width: 230px;
+    width: 240px;
     height: 130px;
-    margin-right: 20px;
-    text-align: center;
+    margin: 10px;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: height 0.2s ease-out;
@@ -774,18 +734,24 @@ div .ht-event-btns .ht-event-btn .flag.dead {
 
 div .ht-event-btns .ht-event-btn .flag span {
     position: absolute;
-    top: 19px;
-    left: 26px;
+    top: 15px;
+    left: 40px;
     color: #fff;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+#aliveText{
+  font-size:16px;
+  color:white;
 }
 
 div .ht-event-btns .ht-event-btn p {
 
     font-size: 20px;
     text-align: left;
-    padding: 27px;
+    padding: 25px;
+    padding-top: 10px;
     padding-bottom: 0px;
 }
 
@@ -809,6 +775,10 @@ div .ht-event-btns .ht-event-btn.stl5 p {
     color: #F8A1A4;
 }
 
+div .ht-event-btns .ht-event-btn.stl6 p {
+    color: #BE91D3;
+}
+
 div .ht-event-btns .ht-event-btn.stl7 p {
     color: #f8e71c;
 }
@@ -817,14 +787,14 @@ div .ht-event-btns .ht-event-btn .subH p{
   font-size:15px;
   color:#ffffff;
   padding-top:0px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 div .ht-event-btns .ht-event-btn .subH.dead p{
   font-size:15px;
   color:#7A878E;
   padding-top:0px;
-  padding-bottom: 10px;
+  padding-bottom: 0px;
 }
 
 
@@ -848,7 +818,8 @@ div .ht-event-btns .ht-event-btn .subH.dead p{
 
 .loader.loading.dead {
   opacity: 1;
-  background: linear-gradient(to right,#D4A0AC, #ED2450, #D4A0AC);
+  /* background: linear-gradient(to right,#D4A0AC, #ED2450, #D4A0AC); */
+  background:grey;
 }
 
 @-webkit-keyframes barberpole {
@@ -870,7 +841,7 @@ div .ht-event-btns .ht-event-btn .subH.dead p{
 
 #chartdiv {
   width: 100%;
-  height: 500px;
+  height: 400px;
 }
 
 </style>
