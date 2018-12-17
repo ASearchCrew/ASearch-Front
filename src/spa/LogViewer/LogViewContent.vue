@@ -59,7 +59,7 @@ export default {
       console.log(this.isClicked)
       this.isClicked ? this.startStream() : this.stopStream()
     }.bind(this));
-    
+
     // 사용자가 Search Keywork 입력 시, query setting
     this.$EventBus.$on('sendQuery', this.setQuery);
     // 사용자가 날짜&시간 선택 시, time setting
@@ -81,23 +81,28 @@ export default {
       var entScrollHeight = container.scrollHeight;
       var curScrollHeight = container.scrollTop;
       var offset = container.offsetHeight;
-      
+
       //scroll Up
       if(curScrollHeight === 0 && event.wheelDelta > 0 && this.dateReceived){
         console.log('over Wheel Up');
         var t = new Date(this.results[0].timeStamp)
         var myDate = t.getTime();
+        var id = this.results[0].id;
+
+        var searchId = this.tmp[this.tmp.length-1].id;
+        var searchTime = new Date(this.tmp[this.tmp.length-1].timeStamp).getTime();
         console.log(this.query);
         this.offset++;
         let config = this.query.length > 0 ? {
           params: {
             direction: 'up',
-            time: myDate,
+            time: searchTime,
             isStream: false,
             search: this.query,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat'
+            hostName: 'filebeat',
+            id: searchId
           }
         }:{
           params: {
@@ -106,7 +111,8 @@ export default {
             time: myDate,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat'
+            hostName: 'filebeat',
+            id: id
           }
         }
         this.dateReceived = false
@@ -116,7 +122,9 @@ export default {
           this.tmp = result.data.logs;
           this.count = result.data.sumCount;
           for(var i = 0; i < this.tmp.length; i++){
-            this.results.unshift(this.tmp[i]);
+            // if (typeof config.params.search !== 'undefined') this.results.push(this.tmp[i]);
+            // else 
+              this.results.unshift(this.tmp[i]);
           }
           console.log(this.tmp)
           this.dateReceived = !this.dateReceived
@@ -128,7 +136,7 @@ export default {
         var t = new Date(this.results[this.results.length-1].timeStamp)
         var myDate = t.getTime();
         console.log(this.query);
-        this.offset--;  
+        this.offset--;
         let config = this.query.length > 0 ? {
           params: {
             direction: 'down',
@@ -136,7 +144,9 @@ export default {
             isStream: false,
             search: this.query,
             initialCount: this.count,
-            offset: this.offset
+            upScrollOffset: this.offset,
+            hostName: 'filebeat',
+            id: id
           }
         }:{
           params: {
@@ -144,7 +154,9 @@ export default {
             isStream: false,
             time: myDate,
             initialCount: this.count,
-            offset: this.offset
+            upScrollOffset: this.offset,
+            hostName: 'filebeat',
+            id: id
           }
         }
         this.dateReceived = false
@@ -172,7 +184,7 @@ export default {
       // console.log(event.currentTarget.childNodes[2].style);
       event.currentTarget.childNodes[0].style.fontWeight="bold";
       event.currentTarget.childNodes[2].style.fontWeight="bold";
-      
+
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.backgroundColor='#fffddb';
       event.currentTarget.childNodes[2].style.overflow='auto';
@@ -182,7 +194,7 @@ export default {
     mouseOutCell(event){
       event.currentTarget.childNodes[0].style.fontWeight='';
       event.currentTarget.childNodes[2].style.fontWeight='';
-      
+
       event.currentTarget.childNodes[1].childNodes[0].style.backgroundColor='';
       event.currentTarget.childNodes[2].style.backgroundColor='';
       event.currentTarget.childNodes[2].style.overflow='';
@@ -215,8 +227,13 @@ export default {
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
+<<<<<<< Updated upstream
         // this.results = result.data.logs;
         this.results = result.data;
+=======
+        this.tmp = result.data.logs;
+        this.results = result.data.logs;
+>>>>>>> Stashed changes
         this.count = result.data.sumCount;
       })
       this.scrollToEnd();
@@ -260,7 +277,8 @@ export default {
           isStream: false,
           search: this.query,
           initialCount: this.count,
-          upScrollOffset: 0
+          upScrollOffset: 0,
+          hostName : 'filebeat'
         }
       }:{
         params: {
@@ -268,12 +286,14 @@ export default {
           isStream: false,
           time: myDate,
           initialCount: this.count,
-          upScrollOffset: 0
+          upScrollOffset: 0,
+          hostName : 'filebeat'
         }
       }
       await this.$http.get('/api/v1/log', config)
       .then((result) => {
         console.log(result);
+        this.tmp = result.data.logs;
         this.results = result.data.logs;
         this.count = result.data.sumCount;
         console.log('sumcount : ' + this.count)
@@ -410,9 +430,9 @@ export default {
     text-align: right;
     top: 20px;
     color: white;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 .timeline-custom .timeline-icon-custom {
     left: 10%;
@@ -443,9 +463,9 @@ export default {
     border-radius: 6px;
     /* border: 1px solid gray; */
     color: black;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 .timeline-custom:before {
   content: '';
