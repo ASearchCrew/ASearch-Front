@@ -14,18 +14,18 @@
                             <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id)>{{ result.message }}</div>
                         </li>
                     </transition-group> -->
-                      <ul v-if="!noData" class="timeline-custom">
-                        <div v-if="!isBeforeData">No Additional Data</div>
+                      <div v-if="!isBeforeData" id="noDataOnTop">No additional entries found, Wheel up again!</div>
+                      <ul v-if="!noData" id="log" class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp }}</div>
+                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp.replace("T", '&nbsp;&nbsp;').replace("Z", " ") }}</div>
                             <div class="timeline-icon-custom"><a href="#"></a></div>
-                            <div class="timeline-body-custom" scale="medium" v-on:click="showDetail(result.id, result.timeStamp)">{{ result.message }}</div>
+                            <div class="timeline-body-custom" v-bind:class="{ 'noWrapping': !isChecked }" scale="medium" v-on:click="showDetail(result.id, result.timeStamp)">{{ result.message }}</div>
                         </li>
-                        <div v-if="!isAfterData">No Additional Data</div>
                       </ul>
+                      <div v-if="!isAfterData" id="noDataOnBottom">No additional entries found, Wheel down again!</div>
                       
                       <!-- <div v-else> -->
-                      <div v-else class="cls-container">
+                      <div v-if="noData" class="cls-container">
                         <div  class="cls-content">
                             <h1 class="error-code text-info">404</h1>
                             <p class="h4 text-uppercase text-bold">There is no data!</p>
@@ -62,9 +62,11 @@ export default {
   data() {
     return {
       query: '',
+      calendarEndTime: null,
       time: null,
       results: [],
       isClicked: false,
+      isChecked: true,
       interval: null,
       tmp: [],
       dateReceived: true,
@@ -72,7 +74,7 @@ export default {
       offset: 0,
       isBeforeData: true,
       isAfterData: true,
-      noData: false,
+      noData: false
     }
   },
   created() {
@@ -91,12 +93,38 @@ export default {
     this.$EventBus.$on('sendQuery', this.setQuery);
     // 사용자가 날짜&시간 선택 시, time setting
     this.$EventBus.$on('sendTime', this.setTime);
+    // 사용자가 날짜&시간 초기화 시, 다시 initRequest
+    this.$EventBus.$on('initRequest', this.initRequest);
+
+
+    // text size 변경
+    this.$EventBus.$on('textSizeChangeReq', this.textSizeChanged);
+    // Wrap Long Lines check
+    this.$EventBus.$on('wrapLongLines', this.wrapLongLines);
   },
   beforeDestroy() {
     clearInterval(this.interval)
     this.interval = null
   },
   methods: {
+    wrapLongLines(isChecked){
+      this.isChecked = isChecked;
+    },
+    textSizeChanged(size) {
+      if(size == 'small'){
+        document.getElementById('log').classList.add('font-small');
+        document.getElementById('log').classList.remove('font-medium');
+        document.getElementById('log').classList.remove('font-large');
+      }else if(size == 'medium'){
+        document.getElementById('log').classList.remove('font-small');
+        document.getElementById('log').classList.add('font-medium');
+        document.getElementById('log').classList.remove('font-large');
+      }else if(size == 'large'){
+        document.getElementById('log').classList.remove('font-small');
+        document.getElementById('log').classList.remove('font-medium');
+        document.getElementById('log').classList.add('font-large');
+      }
+    },
     show () {
       this.$modal.show('hello-world');
     },
@@ -104,20 +132,26 @@ export default {
       this.$modal.hide('hello-world');
     },
     async moveWheel(event){
-      if(this.noData)
+      if(this.results.length <= 0)
         return;
+
       var container = document.querySelector(".timeline-custom");
       var entScrollHeight = container.scrollHeight;
       var curScrollHeight = $("#log-contents").scrollTop();
       var offset = $("#log-contents").outerHeight();
+      var beforeHeight;
       
+      console.log('entScrollHeight = ' + entScrollHeight)
+      console.log('curScrollHeight = ' + curScrollHeight)
+      console.log('offset = ' + offset)
       //scroll Up
       if(curScrollHeight === 0 && event.wheelDelta > 0 && this.dateReceived && !this.isClicked){
         console.log('over Wheel Up');
+        beforeHeight = entScrollHeight;
+
         var t = new Date(this.results[0].timeStamp)
         var myDate = t.getTime();
         var id = this.results[0].id;
-        console.log(this.query);
         this.offset++;
         let config = this.query.length > 0 ? {
           params: {
@@ -144,12 +178,12 @@ export default {
         this.dateReceived = false
         await this.$http.get('/api/v1/log', config)
         .then((result) => {
-          console.log(result)
           this.tmp = result.data.logs;
           if(this.tmp.length > 0){
             this.isBeforeData = true;
           }else{
             this.isBeforeData = false;
+            this.dateReceived = true;
             return;
           }
           this.count = result.data.sumCount;
@@ -157,17 +191,18 @@ export default {
             this.results.unshift(this.tmp[i]);
           }
           console.log(this.tmp)
-          this.dateReceived = !this.dateReceived
+          this.dateReceived = true;
         })
+        
+        $("#log-contents").scrollTop(container.scrollHeight - beforeHeight);
       }
       
       //scroll Down
-      if(offset + curScrollHeight === entScrollHeight && event.wheelDelta < 0 && this.dateReceived && !this.isClicked){
+      if(offset + curScrollHeight >= entScrollHeight && event.wheelDelta < 0 && this.dateReceived && !this.isClicked){
         console.log('over Wheel Down');
         var t = new Date(this.results[this.results.length-1].timeStamp)
         var myDate = t.getTime();
         var id = this.results[this.results.length-1].id;
-        console.log(this.query);
         this.offset--;  
         let config = this.query.length > 0 ? {
           params: {
@@ -200,13 +235,14 @@ export default {
             this.isAfterData = true;
           }else{
             this.isAfterData = false;
+            this.dateReceived = true;
             return;
           }
           for(var i = 0; i < this.tmp.length; i++){
             this.results.push(this.tmp[i]);
           }
           console.log(this.tmp)
-          this.dateReceived = !this.dateReceived
+          this.dateReceived = true;
         })
       }
     },
@@ -272,6 +308,7 @@ export default {
           this.noData = true;
           return;
         }
+        this.results = [];
         for(var i = 0; i < this.tmp.length; i++){
           this.results.unshift(this.tmp[i]);
         }
@@ -400,8 +437,53 @@ export default {
       if(!this.noData)
         this.scrollToEnd();
     },
-    setTime(time) {
+    async setTime(time) {
       this.time = time;
+      var today = new Date(this.time);
+      this.calendarEndTime = new Date(today.getFullYear(), (today.getMonth()), today.getDate()).getTime();
+      this.query = query;
+      console.log(this.time)
+      var myDate = (new Date(this.time)).getTime();
+      let config = this.query.length > 0 ? {
+        params: {
+          direction: 'center',
+          time: myDate,
+          calendarEndTime : this.calendarEndTime,
+          isStream: false,
+          initialCount: this.count,
+          upScrollOffset: 0,
+          hostName: 'filebeat',
+          search: this.query
+        }
+      }:{
+        params: {
+          direction: 'center',
+          time: myDate,
+          calendarEndTime : this.calendarEndTime,
+          isStream: false,
+          initialCount: this.count,
+          upScrollOffset: 0,
+          hostName: 'filebeat'
+        }
+      }
+      await this.$http.get('/api/v1/log', config)
+      .then((result) => {
+        console.log(result);
+        this.tmp = result.data.logs;
+        if(this.tmp.length > 0){
+          this.noData = false;
+        }else{
+          this.noData = true;
+          return;
+        }
+        this.results = [];
+        for(var i = 0; i < this.tmp.length; i++){
+          this.results.unshift(this.tmp[i])
+        }
+        this.count = result.data.sumCount;
+      })
+      if(!this.noData)
+        this.scrollToEnd();
     },
     scrollToEnd() {
       var container = document.querySelector(".timeline-custom");
@@ -579,5 +661,35 @@ export default {
 }
 *, ::after, ::before {
     box-sizing: border-box;
+}
+
+#noDataOnTop {
+  padding: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+#noDataOnBottom {
+  padding: 5px;
+  font-size: 14px;
+  text-align: center;
+}
+
+
+
+
+.font-small {
+  font-size: 0.7em;
+}
+.font-medium {
+  font-size: 1em;
+}
+.font-large {
+  font-size: 1.3em;
+}
+.timeline-custom .noWrapping {
+  overflow: auto; 
+  text-overflow: clip;
+  white-space: 	normal; 
 }
 </style>

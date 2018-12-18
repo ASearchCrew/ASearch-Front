@@ -5,7 +5,7 @@
             <div class="nano">
                 <div class="nano-content">
                     <!--Server Menu-->
-                    <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-server icon-lg icon-fw"></i> WAS List</p>
+                    <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-server icon-lg icon-fw"></i> Server List</p>
                     <div class="list-group bg-trans">
                        <div v-for="server in serverList" :key="server.hostName" class="list-group-item">
                            <a href="#" class="rainbow-button" v-bind:alt="server.hostName"></a>
@@ -122,15 +122,16 @@ a {
   justify-content:center;
   border-radius:5px;
 }
-/*
-.rainbow-button:hover {
-  animation:slidebg 2s linear infinite;
+
+.rainbow-button:hover:after {
+  background-color:#2674fca2;
 }
-*/
+
 
 @keyframes slidebg {
   to {
     background-position:15vw;
   }
 }
+
 </style>

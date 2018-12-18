@@ -11,34 +11,39 @@
                             Customize <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <form>
-                                <div class="radio">
-                                    <label><input type="radio" name="optradio" checked>Option 1</label>
+                            <h5 class="dropdown-subtitle">Text Size</h5>
+                            <div class="funkyradio">
+                                <div class="funkyradio-success">
+                                    <input type="radio" name="radio" id="radio3" value="small" />
+                                    <label for="radio3">Small</label>
                                 </div>
-                                <div class="radio">
-                                    <label><input type="radio" name="optradio">Option 2</label>
+                                <div class="funkyradio-warning">
+                                    <input type="radio" name="radio" id="radio5" value="medium" checked/>
+                                    <label for="radio5">Medium</label>
                                 </div>
-                                <div class="radio">
-                                    <label><input type="radio" name="optradio">Option 3</label>
+                                <div class="funkyradio-danger">
+                                    <input type="radio" name="radio" id="radio4" value="large" />
+                                    <label for="radio4">Large</label>
                                 </div>
-                            </form>
-                            <!-- <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li> -->
+                            </div>
+
+                            <div class="funkyradio">
+                                <h5 class="dropdown-subtitle">Line Wrapping</h5>
+                                <div class="funkyradio-primary">
+                                    <input type="checkbox" name="checkbox" id="checkbox2" checked/>
+                                    <label for="checkbox2">Wrap Long Lines</label>
+                                </div>
+                            </div>
                         </ul>
                     </div>
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <!-- <div id="picker"> </div>
-                    <input type="hidden" id="time" value=""> -->
-                    <div class='input-group date' id='datetimepicker'>
-                        <input type='text' class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
+                    <input v-if="isClicked" id='datetimepicker' type='text' class="form-control" onkeydown="return false" placeholder="Streaming..." disabled/>
+                    <input v-else id='datetimepicker' type='text' class="form-control" onkeydown="return false" placeholder="DateTime" />
+                </div>
+                <div class="euiFlexItem euiFlexItem--flexGrowZero">
+                    <button v-if="isClicked" id="reset-date" type="button" class="btn btn-warning" disabled="disabled">X</button>
+                    <button v-else id="reset-date" type="button" class="btn btn-warning">X</button>
                 </div>
                 <div class="euiFlexItem euiFlexItem--flexGrowZero">
                     <button v-if="isClicked" type="button" class="btn btn-danger stop-btn" @click="streamBtnClick">Stop Stream</button>
@@ -47,42 +52,19 @@
             </div>
         </div>
     </div>
-    <!-- <div id="page-head">
-        <div class="sub-navbar">
-            <div class="euiFlexGroup euiFlexGroup--alignItemsCenter euiFlexGroup--justifyContentSpaceBetween euiFlexGroup--directionRow euiFlexGroup--responsive">
-                <div class="euiFlexItem" >
-                    <el-input
-                        id="search"
-                        placeholder="Search..."
-                        prefix-icon="el-icon-search"
-                        @keyup.native="sendQuery"
-                    />
-                </div>
-                <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <el-dropdown trigger="click">
-                        <el-button plain>
-                        Customize<i class="el-icon-caret-bottom el-icon--right"/>
-                        </el-button>
-                        <el-dropdown-menu slot="dropdown" class="no-border">
-                            <el-radio-group v-model="radioOption" style="padding: 5px 15px;">
-                                <el-radio v-for="item in radioOptions" :label="item.key" :key="item.key">
-                                    {{ item.name }}
-                                </el-radio>
-                            </el-radio-group>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </div>
-                <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <div class="time-container">
-                        <el-date-picker v-model="time" :picker-options="pickerOptions" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Release time"/>
-                    </div>
-                </div>
-                <div class="euiFlexItem euiFlexItem--flexGrowZero">
-                    <el-button v-if="isClicked" type="danger" @click="streamBtnClick">Stop Stream</el-button>
-                    <el-button v-else type="success" plain @click="streamBtnClick">Stream Live</el-button>
-                </div>
-        </div>
-      </div>
+    <!-- <div class="euiFlexItem euiFlexItem--flexGrowZero">
+        <el-dropdown trigger="click">
+            <el-button plain>
+            Customize<i class="el-icon-caret-bottom el-icon--right"/>
+            </el-button>
+            <el-dropdown-menu slot="dropdown" class="no-border">
+                <el-radio-group v-model="radioOption" style="padding: 5px 15px;">
+                    <el-radio v-for="item in radioOptions" :label="item.key" :key="item.key">
+                        {{ item.name }}
+                    </el-radio>
+                </el-radio-group>
+            </el-dropdown-menu>
+        </el-dropdown>
     </div> -->
 </template>
 
@@ -96,6 +78,8 @@ export default {
         }
     },
     mounted() {
+        var vm = this;
+
         $('#datetimepicker').datetimepicker({
             language: 'ko',
             weekStart: 1,
@@ -104,11 +88,30 @@ export default {
             todayHighlight: 1,
             startView: 2,
             forceParse: 0,
-            showMeridian: 1
+            showMeridian: 1,
+            maxDate: new Date(),
+            endDate: new Date()
         }).on('change', function(e){
             this.time = e.target.value
             this.sendTime(this.time)
-	    }.bind(this));
+        }.bind(this));
+        
+        $("#reset-date").click(function(){
+            $('#datetimepicker').val("").datetimepicker("update");
+            this.initRequest();
+        }.bind(this));
+
+        $('input[type=radio][name=radio]').change(function() {
+            vm.textSizeChangeReq(this.value);
+        });
+
+        $("#checkbox2").change(function(){
+            if($("#checkbox2").is(":checked")){
+                vm.wrapLongLines(true);
+            }else{
+                vm.wrapLongLines(false);
+            }
+        });
     },
     methods: {
         streamBtnClick: function() {
@@ -122,8 +125,16 @@ export default {
             this.$EventBus.$emit('sendQuery', document.getElementById('query').value)
         },
         sendTime: function(newTime) {
-            console.log(newTime)
             this.$EventBus.$emit('sendTime', newTime)
+        },
+        initRequest: function() {
+            this.$EventBus.$emit('initRequest')
+        },
+        textSizeChangeReq: function(size) {
+            this.$EventBus.$emit('textSizeChangeReq', size)
+        },
+        wrapLongLines: function(isChecked) {
+            this.$EventBus.$emit('wrapLongLines', isChecked)
         }
     }
 }
@@ -301,5 +312,124 @@ export default {
     box-shadow: none;
 
   }
+}
+
+
+
+
+
+.funkyradio div {
+  clear: both;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.funkyradio label {
+  width: 100%;
+  border-radius: 3px;
+  /* border: 1px solid #D1D3D4; */
+  font-weight: normal;
+}
+
+.funkyradio input[type="radio"]:empty,
+.funkyradio input[type="checkbox"]:empty {
+  display: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label,
+.funkyradio input[type="checkbox"]:empty ~ label {
+  position: relative;
+  line-height: 2.5em;
+  text-indent: 3.25em;
+  margin-top: 1em;
+  margin: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label:before,
+.funkyradio input[type="checkbox"]:empty ~ label:before {
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #D1D3D4;
+  /* border-radius: 3px 0 0 3px; */
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+  color: rgb(255, 255, 255);
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: #C2C2C2;
+}
+
+.funkyradio input[type="radio"]:checked ~ label,
+.funkyradio input[type="checkbox"]:checked ~ label {
+  color: rgb(255, 255, 255);
+}
+
+.funkyradio input[type="radio"]:checked ~ label:before,
+.funkyradio input[type="checkbox"]:checked ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: #333;
+  background-color: #ccc;
+}
+
+.funkyradio input[type="radio"]:focus ~ label:before,
+.funkyradio input[type="checkbox"]:focus ~ label:before {
+  box-shadow: 0 0 0 3px #999;
+}
+
+.funkyradio-default input[type="radio"]:checked ~ label:before,
+.funkyradio-default input[type="checkbox"]:checked ~ label:before {
+  color: #333;
+  background-color: #ccc;
+}
+
+.funkyradio-primary input[type="radio"]:checked ~ label:before,
+.funkyradio-primary input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #337ab7;
+}
+
+.funkyradio-success input[type="radio"]:checked ~ label:before,
+.funkyradio-success input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #5cb85c;
+}
+
+.funkyradio-danger input[type="radio"]:checked ~ label:before,
+.funkyradio-danger input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #d9534f;
+}
+
+.funkyradio-warning input[type="radio"]:checked ~ label:before,
+.funkyradio-warning input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #f0ad4e;
+}
+
+.funkyradio-info input[type="radio"]:checked ~ label:before,
+.funkyradio-info input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #5bc0de;
+}
+
+.dropdown-subtitle{
+    text-align: center;
 }
 </style>

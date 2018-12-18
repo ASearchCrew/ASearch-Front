@@ -5,9 +5,9 @@
 
         <!-- Visible when footer positions are fixed -->
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <div class="show-fixed pad-rgt pull-right">
+        <!-- <div class="show-fixed pad-rgt pull-right">
             You have <a href="#" class="text-main"><span class="badge badge-danger">3</span> pending action.</a>
-        </div>
+        </div> -->
 
 
 

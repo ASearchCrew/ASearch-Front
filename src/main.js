@@ -18,8 +18,8 @@ const router = new VueRouter({
 import Axios from 'axios';
 var axios = require('axios');
 var axiosInstance = axios.create({
-   baseURL: 'http://192.168.0.11:8080',
-//  baseURL: 'http://192.168.0.11:8080',
+  //  baseURL: 'http://192.168.0.7:8080',
+ baseURL: 'http://192.168.0.11:8080',
   /* other custom settings */
 })
 Vue.prototype.$http = axiosInstance

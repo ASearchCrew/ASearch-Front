@@ -513,17 +513,17 @@
 
                         <!--Widget-->
                         <!--================================-->
-                        <div class="mainnav-widget">
+                        <!-- <div class="mainnav-widget"> -->
 
                             <!-- Show the button on collapsed navigation -->
-                            <div class="show-small">
+                            <!-- <div class="show-small">
                                 <a href="#" data-toggle="menu-widget" data-target="#demo-wg-server">
                                     <i class="demo-pli-monitor-2"></i>
                                 </a>
-                            </div>
+                            </div> -->
 
                             <!-- Hide the content on collapsed navigation -->
-                            <div id="demo-wg-server" class="hide-small mainnav-widget-content">
+                            <!-- <div id="demo-wg-server" class="hide-small mainnav-widget-content">
                                 <ul class="list-group">
                                     <li class="list-header pad-no mar-ver">Server Status</li>
                                     <li class="mar-btm">
@@ -543,11 +543,11 @@
                                                 <span class="sr-only">75%</span>
                                             </div>
                                         </div>
-                                    </li>
+                                    </li> -->
                                     <!-- <li class="pad-ver"><a href="#" class="btn btn-success btn-bock">View Details</a></li> -->
-                                </ul>
+                                <!-- </ul>
                             </div>
-                        </div>
+                        </div> -->
                         <!--================================-->
                         <!--End widget-->
 
