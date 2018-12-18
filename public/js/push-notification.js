@@ -1,44 +1,52 @@
-import firebase from 'firebase';
-import configInfo from './configInfo';
+// import firebase from 'firebase';
+// import configInfo from './configInfo';
 
-const config = {
-  apiKey: configInfo.env.apiKey,
-  authDomain: configInfo.env.authDomain,
-  databaseURL: configInfo.env.databaseURL,
-  projectId: configInfo.env.projectId,
-  storageBucket: configInfo.env.storageBucket,
-  messagingSenderId: configInfo.env.messagingSenderId 
- }
+// const config = {
+//   apiKey: configInfo.env.apiKey,
+//   authDomain: configInfo.env.authDomain,
+//   databaseURL: configInfo.env.databaseURL,
+//   projectId: configInfo.env.projectId,
+//   storageBucket: configInfo.env.storageBucket,
+//   messagingSenderId: configInfo.env.messagingSenderId 
+//  }
 
-firebase.initializeApp(config);
-navigator.serviceWorker
-    .register('/sw.js')
-    .then((registration) => {
-      firebase.messaging().useServiceWorker(registration);
-});
+// firebase.initializeApp(config);
+// // navigator.serviceWorker
+// //     .register('/sw.js')
+// //     .then((registration) => {
+// //       firebase.messaging().useServiceWorker(registration);
+// // });
 
-console.log("★★Firebase★★");
+// console.log("★★Firebase★★");
 
-const messaging = firebase.messaging();
-messaging.usePublicVapidKey(configInfo.env.publicVapidKey);
+// const messaging = firebase.messaging();
+// messaging.usePublicVapidKey(configInfo.env.publicVapidKey);
 
-messaging.requestPermission().then(function() {
-  console.log('Notification permission granted.');
-  // TODO(developer): Retrieve an Instance ID token for use with FCM.
-  // ...
-}).catch(function(err) {
-  console.log('Unable to get permission to notify.', err);
-})
+// messaging.requestPermission().then(function() {
+//   console.log('Notification permission granted.');
+  
+//   // TODO(developer): Retrieve an Instance ID token for use with FCM.
+//   // ...
+// //   messaging.getToken().then((token) => {
+// //     console.log(token);
+// //     console.log('Token refreshed.');
+// //   }).catch(function(err) {
+// //     console.log('Unable to retrieve refreshed token ', err);
+// //   });
+// }).catch(function(err) {
+//   console.log('Unable to get permission to notify.', err);
 
-export const askForPermissioToReceiveNotifications = async () => {
-    try {
-      const messaging = firebase.messaging();
-      await messaging.requestPermission();
-      const token = await messaging.getToken();
-      console.log('★★token :', token);
+// })
+
+// export const askForPermissioToReceiveNotifications = async () => {
+//     try {
+//       const messaging = firebase.messaging();
+//       await messaging.requestPermission();
+//       const token = await messaging.getToken();
+//       console.log('★★token :', token);
       
-      return token;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+//       return token;
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
