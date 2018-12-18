@@ -1,7 +1,7 @@
 <template ref="popup">
 <div style="" class="panel">
     <div class="panel-body" style="padding:15px">
-        <div><h3 style="margin-top:0px">popup</h3></div>
+        <div><h4 style="margin-top:0px">Add Server</h4></div>
         <div class="progress progress-xs" style="background-color:#D4D4D4; margin-top:2px;"></div>
         <div class="form-group">
             <label class="control-label">Host Name</label>
@@ -11,6 +11,12 @@
             <label class="control-label">Host Ip</label>
             <input v-model="hostIp" class="form-control"/>
         </div>
+        <div class="form-group">
+            <label class="control-label">Interval (min)</label>
+            <input type="number" v-model="interval" class="form-control"/>
+        </div>
+
+
 
     </div>
     <div class="panel-footer text-right">
@@ -26,6 +32,7 @@ export default {
       return {
           hostName:"",
           hostIp:"",
+          interval:"",
           addEventFlag: false
       }
   },
@@ -36,7 +43,8 @@ export default {
         const baseURI = 'http://192.168.0.11:8080';
         this.$http.post(`${baseURI}/api/v1/management/server`,{
             hostName : this.hostName,
-            hostIp : this.hostIp
+            hostIp : this.hostIp,
+            interval : this.interval*60000
 
         }).then(function(data){
             $.niftyNoty({
@@ -53,7 +61,7 @@ export default {
   },
   beforeDestroy(){
     if(this.addEventFlag){
-        var serverParam = {"hostName":this.hostName, "hostIp":this.hostIp, "lastTime":9999, "timeStamp":"Exception"};
+        var serverParam = {"hostName":this.hostName, "hostIp":this.hostIp, "interval":this.interval, "lastTime":9999, "timeStamp":"Exception"};
             
         this.$EventBus.$emit('closeAddModal',serverParam);
     }

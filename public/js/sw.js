@@ -1,7 +1,9 @@
+import configInfo from './configInfo';
+
 importScripts('https://www.gstatic.com/firebasejs/4.6.1/firebase-app.js'); 
 importScripts('https://www.gstatic.com/firebasejs/4.6.1/firebase-messaging.js'); 
 
-firebase.initializeApp({ 'messagingSenderId': process.env.VUE_APP_FCM_MESSAGINGSENDERID //발신자ID
+firebase.initializeApp({ 'messagingSenderId': configInfo.env.messagingSenderId //발신자ID
 }); 
 
 self.addEventListener('push', function(event) { 

@@ -125,12 +125,12 @@
                                 </router-link>
                             </li>
 
-                            <li>
+                            <!-- <li>
                                 <a href="#">
                                     <i class="demo-pli-data-settings"></i>
                                     <span class="menu-title">Configuration</span>
                                 </a>
-                            </li>
+                            </li> -->
 
                             <!-- / ======================= 새로 추가 =============================== -->
                 

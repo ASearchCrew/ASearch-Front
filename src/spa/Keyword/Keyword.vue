@@ -2,8 +2,8 @@
     <div id="content-container" style="background-color: #0b1521">
         <div class="panel" >
             <div class="panel-body" style="background-color: #0b1521; ">
-                <div style="display:inline-flex">
-                    <div v-for="(data,index) in datas" :key="data.hostName">
+                <div style="display:inline-flex; flex-flow:row wrap; width:100%;">
+                    <div v-for="(data,index) in datas" :key="data.hostName" id="keywordDiv" >
                         <table class="table" style="width:350px;">
                             <thead>
                                 <tr>
@@ -11,6 +11,7 @@
                                     <th style="width:20px"></th>
                                 </tr>
                             </thead>
+                            <div class="progress progress-xs" style="background-color:#D4D4D4; margin-top:2px;"></div>
                             <tbody>
                                 <tr v-for="(keyword,index) in data.keywords" :key="index">
                                     <td>
@@ -55,7 +56,9 @@ export default {
                 //         ]
                 // }
             ],
-            srvUrl : 'http://192.168.0.11:8080' // 우영
+            srvUrl : //'http://192.168.0.7:8080' // 창호 
+                    'http://192.168.0.11:8080' // 우영
+                     //'http://52.79.220.131:8080' // 배포 
         }
     },
     methods : {
@@ -124,5 +127,13 @@ export default {
 </script>
 
 <style scoped>
-
+#keywordDiv{
+    position: relative;  
+    background-color:#2E343E;
+    padding: 10px; 
+    padding-bottom: 20px;
+    margin:10px;
+    
+    border-radius: 8px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <!--Page content-->
   <!--===================================================-->
-<div id="content-container" style="background-color: #0b1521; overflow-x:auto; max-height:934px; margin-left:55px">
+<div id="content-container" style="background-color: #0b1521; overflow-x:auto; max-height:910px; margin-left:25px; margin-top:25px;">
   <div class="fluid faq-accordion" style="">
 
     <div style="display:inline-flex;">
@@ -16,7 +16,6 @@
           <div class="panel-collapse collapse in" id="toggleDiv-1" style="">
             <div class="ht-event-btns">
 
-              <!-- <div v-for="server in serverList" :key="server.index" class="ht-event-btn stl1">  -->
               <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
                 <router-link to="/logViewer">
                   <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
@@ -54,93 +53,27 @@
           <div class="panel-collapse collapse in" id="toggleDiv-2" style="">
 
             <div class="ht-event-btns">
-              <div class="ht-event-btn stl1">
-                <div class="flag">
-                    <span>alive</span>
-                </div>
-                <p>File beat</p>
-                <div class="subH">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading"></div>
+              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+                <router-link to="/logViewer">
+                  <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
+                    <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
+                    <p v-else><span id="aliveText">alive</span></p>
+                  </div>
+                  <p>{{server.hostName}}</p>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'subH dead' : 'subH' ]">
+                    <p>{{server.hostIp}}<br><span style="color:grey">{{server.timeStamp | frontDateFormat}}</span></p>
+                  </div>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'loader loading dead' : 'loader loading' ]" ></div>
+                </router-link>
               </div>
 
-              <div class="ht-event-btn stl2">
-                <div class="flag">
-                    <span>alive</span>
+              <div class="ht-event-btn add" @click="addNewServer()">
+                <div class="panel-body demo-nifty-btn" style="text-align:center; padding-top:45px;">
+                  <i class="fa fa-plus icon-3x"></i>
+                  <div>add</div>
                 </div>
-                <p>Elastic search</p>
-                <div class="subH">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading"></div>
               </div>
 
-              <div class="ht-event-btn stl3" >
-                <div class="flag">
-                    <span>alive</span>
-                </div>
-                <p>Logstash</p>
-                <div class="subH">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading"></div>
-              </div>
-
-              <div class="ht-event-btn stl4">
-                <div class="flag">
-                    <span>alive</span>
-                </div>
-                <p>Kibana</p>
-                <div class="subH">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading"></div>
-              </div>
-
-              <div class="ht-event-btn stl3">
-                <div class="flag">
-                    <span>alive</span>
-                </div>
-                <p>Kibana</p>
-                <div class="subH">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading"></div>
-              </div>
-
-              <div class="ht-event-btn">
-                <div class="flag dead">
-                    <span>dead</span>
-                </div>
-                <p>Kibana</p>
-                <div class="subH dead">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading dead"></div>
-              </div>
-
-              <div class="ht-event-btn">
-                <div class="flag dead">
-                    <span>dead</span>
-                </div>
-                <p>Kibana</p>
-                <div class="subH dead">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading dead"></div>
-              </div>
-
-              <div class="ht-event-btn">
-                <div class="flag dead">
-                    <span>dead</span>
-                </div>
-                <p>Kibana</p>
-                <div class="subH dead">
-                  <p>file live flow sdfsli sdf</p>
-                </div>
-                <div class="loader loading dead"></div>
-              </div>
             </div> <!--ht-event-btns end-->
           </div>
 
@@ -155,121 +88,30 @@
           <div class="panel-collapse collapse" id="toggleDiv-3" style="padding-bottom:0px;">
     
               
-                <div class="ht-event-btns">
-                  <div class="ht-event-btn stl1">
-                    <div class="flag">
-                        <span>Server 1</span>
-                    </div>
-                    <p>File beat</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
+               <div class="ht-event-btns">
+              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+                <router-link to="/logViewer">
+                  <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
+                    <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
+                    <p v-else><span id="aliveText">alive</span></p>
                   </div>
-
-                  <div class="ht-event-btn stl2">
-                    <div class="flag">
-                        <span>Server 2</span>
-                    </div>
-                    <p>Elastic search</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
+                  <p>{{server.hostName}}</p>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'subH dead' : 'subH' ]">
+                    <p>{{server.hostIp}}<br><span style="color:grey">{{server.timeStamp | frontDateFormat}}</span></p>
                   </div>
+                  <div v-bind:class="[ server.lastTime==9999 ? 'loader loading dead' : 'loader loading' ]" ></div>
+                </router-link>
+              </div>
 
-                  <div class="ht-event-btn stl3" >
-                    <div class="flag">
-                        <span>Server 3</span>
-                    </div>
-                    <p>Logstash</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
+              <div class="ht-event-btn add" @click="addNewServer()">
+                <div class="panel-body demo-nifty-btn" style="text-align:center; padding-top:45px;">
+                  <i class="fa fa-plus icon-3x"></i>
+                  <div>add</div>
+                </div>
+              </div>
 
-                  <div class="ht-event-btn stl4">
-                    <div class="flag">
-                        <span>Server 4</span>
-                    </div>
-                    <p>Kibana</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
+            </div> <!--ht-event-btns end-->
 
-                  <div class="ht-event-btn stl2">
-                    <div class="flag">
-                        <span>Server 5</span>
-                    </div>
-                    <p>Elastic search</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
-
-                </div> <!--ht-event-btns end-->
-
-                <div class="ht-event-btns">
-                  <div class="ht-event-btn stl5">
-                    <div class="flag">
-                        <span>Server 6</span>
-                    </div>
-                    <p>File beat</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
-
-                  <div class="ht-event-btn">
-                    <div class="flag dead">
-                        <span>Server 7</span>
-                    </div>
-                    <p>Elastic search</p>
-                    <div class="subH dead">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading dead"></div>
-                  </div>
-
-                  <div class="ht-event-btn stl7" >
-                    <div class="flag">
-                        <span>Server 8</span>
-                    </div>
-                    <p>Logstash</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
-
-                  <div class="ht-event-btn">
-                    <div class="flag dead">
-                        <span>Server 9</span>
-                    </div>
-                    <p>Kibana</p>
-                    <div class="subH dead">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading dead"></div>
-                  </div>
-
-                  <div class="ht-event-btn stl2">
-                    <div class="flag">
-                        <span>Server 10</span>
-                    </div>
-                    <p>Elastic search</p>
-                    <div class="subH">
-                      <p>file live flow sdfsli sdf</p>
-                    </div>
-                    <div class="loader loading"></div>
-                  </div>
-
-                </div> <!--ht-event-btns end-->
               
               
           </div><!--Div:End toggleDiv-3-->
@@ -286,14 +128,17 @@
         <br>
         <div style="background-color:#2E343E; padding:4px; border-radius: 8px; height:35px; width:100%; display:inline-block;;">
 
-            <div class="media-body"><p style="font-size : 20px; text-align:left; padding-left:10px;">Keyword Count</p></div>
-            <!-- <div style="float:left; "><i class="fa fa-plus"></i></div> -->
-            <div class="media-right textright">
-                <i class="demo-pli-mine icon-lg icon-fw"></i>
-            </div>
+          <div class="media-body"><p style="font-size : 20px; text-align:left; padding-left:10px;">Keyword Count</p>
+           
+          </div>
+           <!-- <div class="select">
+            <select name="slct" id="slct">
+              <option v-for="server in serverList" :key="server.index">{{server.hostName}}</option>
+            </select>
+          </div> -->
+                    
         </div>
-        
-          
+         
         <br>
         <!-- Chart Div -->
         <div id="chartdiv2" >
@@ -331,12 +176,15 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import PopupAddServer from './PopupAddServer.vue';
 
+import {askForPermissioToReceiveNotifications} from '../../../public/js/push-notification';
+
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_dark);
 
 export default {
   data (){
     return {
+      selectServer:"",
       click1:true,
       click2:true,
       click3:false,
@@ -443,6 +291,44 @@ export default {
       ],
       serverList : [
       ],
+      serverList2 : [
+        {"hostIp":"172.0.0.1",
+        "hostName":"File beat",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.2",
+        "hostName":"Elastic search",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.3",
+        "hostName":"Logstash",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.4",
+        "hostName":"Kibana",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.5",
+        "hostName":"Filebeat",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.6",
+        "hostName":"Axios",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.7",
+        "hostName":"Firebase",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.8",
+        "hostName":"Dotenv",
+        "lastTime":1,
+        "timeStamp":"2018-12-20 09:56:12"},
+        {"hostIp":"172.0.0.9",
+        "hostName":"GCM",
+        "lastTime":9999,
+        "timeStamp":"2018-12-20 09:56:12"}
+      ],
       sorting : -1,
       visibleModal :false,
       srvUrl : 'http://192.168.0.7:8080' // 창호
@@ -526,7 +412,7 @@ export default {
     },
     createChart2(){
       let chart = am4core.create("chartdiv2", am4charts.XYChart);
-      chart.data = this.chartData;
+      chart.data = this.chartDataList2;
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;
@@ -544,49 +430,75 @@ export default {
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.tooltip.disabled = true;
+      
+      // for(var i=1; Object.keys(this.chartDataList2[0]).length; i++){
+      //   let series = chart.series.push(new am4charts.LineSeries());
+      //   series.dataFields.dateX = "date";
+      //   series.name = Object.keys(this.chartDataList2[0])[i];
+      //   series.dataFields.valueY = Object.keys(this.chartDataList2[0])[i];
+      //   series.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
+      //   series.tooltip.background.fill = am4core.color("#FFF");
+      //   series.tooltip.getStrokeFromObject = true;
+      //   series.tooltip.background.strokeWidth = 1;
+      //   series.tooltip.getFillFromObject = false;
+      //   series.fillOpacity = 0.6;
+      //   series.strokeWidth = 2;
+      //   series.stacked = true;
+      // }
 
-      let series = chart.series.push(new am4charts.LineSeries());
-      series.dataFields.dateX = "year";
-      series.name = "File beat";
-      series.dataFields.valueY = "cars";
-      series.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-      series.tooltip.background.fill = am4core.color("#FFF");
-      series.tooltip.getStrokeFromObject = true;
-      series.tooltip.background.strokeWidth = 1;
-      series.tooltip.getFillFromObject = false;
-      series.fillOpacity = 0.6;
-      series.strokeWidth = 2;
-      series.stacked = true;
+      let series;
+      let series2;
+      let series3;
 
-      let series2 = chart.series.push(new am4charts.LineSeries());
-      series2.name = "Elastic search";
-      series2.dataFields.dateX = "year";
-      series2.dataFields.valueY = "motorcycles";
-      series2.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-      series2.tooltip.background.fill = am4core.color("#FFF");
-      series2.tooltip.getFillFromObject = false;
-      series2.tooltip.getStrokeFromObject = true;
-      series2.tooltip.background.strokeWidth = 1;
-      series2.sequencedInterpolation = true;
-      series2.fillOpacity = 0.6;
-      series2.stacked = true;
-      series2.strokeWidth = 2;
+      if(Object.keys(this.chartDataList2[0]).length>1){
+        console.log("@@@@@ "+Object.keys(this.chartDataList2[0])[1]);
+        series = chart.series.push(new am4charts.LineSeries());
+        series.dataFields.dateX = "date";
+        series.name = Object.keys(this.chartDataList2[0])[1];
+        series.dataFields.valueY = Object.keys(this.chartDataList2[0])[1];
+        series.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
+        series.tooltip.background.fill = am4core.color("#FFF");
+        series.tooltip.getStrokeFromObject = true;
+        series.tooltip.background.strokeWidth = 1;
+        series.tooltip.getFillFromObject = false;
+        series.fillOpacity = 0.6;
+        series.strokeWidth = 2;
+        series.stacked = true;
+      }
 
-      let series3 = chart.series.push(new am4charts.LineSeries());
-      series3.name = "Logstash";
-      series3.dataFields.dateX = "year";
-      series3.dataFields.valueY = "bicycles";
-      series3.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-      series3.tooltip.background.fill = am4core.color("#FFF");
-      series3.tooltip.getFillFromObject = false;
-      series3.tooltip.getStrokeFromObject = true;
-      series3.tooltip.background.strokeWidth = 1;
-      series3.sequencedInterpolation = true;
-      series3.fillOpacity = 0.6;
-      series3.defaultState.transitionDuration = 1000;
-      series3.stacked = true;
-      series3.strokeWidth = 2;
+      if(Object.keys(this.chartDataList2[0]).length>2){
+        console.log("@@@@@ "+Object.keys(this.chartDataList2[0])[2]);
+        series2 = chart.series.push(new am4charts.LineSeries());
+        series2.name = Object.keys(this.chartDataList2[0])[2];
+        series2.dataFields.dateX = "date";
+        series2.dataFields.valueY = Object.keys(this.chartDataList2[0])[2];
+        series2.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
+        series2.tooltip.background.fill = am4core.color("#FFF");
+        series2.tooltip.getFillFromObject = false;
+        series2.tooltip.getStrokeFromObject = true;
+        series2.tooltip.background.strokeWidth = 1;
+        series2.sequencedInterpolation = true;
+        series2.fillOpacity = 0.6;
+        series2.stacked = true;
+        series2.strokeWidth = 2;
+      }
 
+      if(Object.keys(this.chartDataList2[0]).length>3){
+        series3 = chart.series.push(new am4charts.LineSeries());
+        series3.name = Object.keys(this.chartDataList2[0])[2];
+        series3.dataFields.dateX = "date";
+        series3.dataFields.valueY = Object.keys(this.chartDataList2[0])[3];
+        series3.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
+        series3.tooltip.background.fill = am4core.color("#FFF");
+        series3.tooltip.getFillFromObject = false;
+        series3.tooltip.getStrokeFromObject = true;
+        series3.tooltip.background.strokeWidth = 1;
+        series3.sequencedInterpolation = true;
+        series3.fillOpacity = 0.6;
+        series3.defaultState.transitionDuration = 1000;
+        series3.stacked = true;
+        series3.strokeWidth = 2;
+      }
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = dateAxis;
 
@@ -602,7 +514,7 @@ export default {
           title: 'Server 추가',
           name: 'dynamic-modal',
           width : '300px',
-          height : '270px',
+          height : '335px',
           borderRadius : '8px',
           draggable: true,        
       });
@@ -628,20 +540,18 @@ export default {
         console.log(result);
         this.serverList = result.data;
         this.serverList = this.serverList.slice(0).sort((a, b) => a.lastTime < b.lastTime ? this.sorting : -this.sorting );
-
+        askForPermissioToReceiveNotifications();
         this.$http.get(`${baseURI}/api/v1/management/datecount`)
         .then((result) => {
             this.chartDataList = result.data;
             this.chartDataList = this.chartDataList.slice(0).sort((a, b) => a.chartDatas[0].count < b.chartDatas[0].count ? -this.sorting : this.sorting );
-            // console.log(this.chartDataList);
+            console.log(this.chartDataList);
             this.createChart1();
 
-            this.$http.get(`${baseURI}/api/v1/management/keywordcount?hostName=123`)
+            this.$http.get(`${baseURI}/api/v1/management/keywordcount?hostName=`+this.serverList[0].hostName)
             .then((result) => {
                 this.chartDataList2 = result.data;
-                console.log("@@@@@@@@@@@@@");
                 console.log(this.chartDataList2);
-                
                 this.createChart2();
             })
         });    
@@ -672,16 +582,66 @@ export default {
 </script>
 
 <style scoped>
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: #2E343E;
+  background-image: none;
+}
+/* Custom Select */
+.select {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3em;
+  line-height: 3;
+  background: #2c3e50;
+  overflow: hidden;
+  border-radius: .25em;
+}
+select {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 0 0 .5em;
+  color: #fff;
+  cursor: pointer;
+}
+select::-ms-expand {
+  display: none;
+}
+/* Arrow */
+.select::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 1em;
+  background: #34495e;
+  pointer-events: none;
+}
+.select::after {
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+
 #btnGroup {
-  width:1320px;
+  width:1340px;
 }
 
 #chartGroup {
-  margin-top:30px;
   width:450px;
   padding : 10px;
   background-color: #04080D;
   height: 820px;
+
 }
 
 div.row-line {
@@ -792,6 +752,10 @@ div .ht-event-btns .ht-event-btn.stl7 p {
     color: #f8e71c;
 }
 
+div .ht-event-btns .ht-event-btn.stl8 p {
+    color: #CE9178;
+}
+
 div .ht-event-btns .ht-event-btn .subH p{
   font-size:15px;
   color:#ffffff;
@@ -801,7 +765,7 @@ div .ht-event-btns .ht-event-btn .subH p{
 
 div .ht-event-btns .ht-event-btn .subH.dead p{
   font-size:15px;
-  color:#7A878E;
+  color:grey;
   padding-top:0px;
   padding-bottom: 0px;
 }
@@ -852,5 +816,8 @@ div .ht-event-btns .ht-event-btn .subH.dead p{
   width: 100%;
   height: 400px;
 }
-
+#chartdiv2 {
+  width: 100%;
+  height: 400px;
+}
 </style>
