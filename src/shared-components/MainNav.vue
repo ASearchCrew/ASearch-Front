@@ -21,7 +21,7 @@
 
             <!--Menu-->
             <!--================================-->
-            <div id="mainnav-menu-wrap">
+            <div id="mainnav-menu-wrap" style="background-color: #2E343E">
                 <div class="nano">
                     <div class="nano-content">
 
@@ -101,12 +101,12 @@
                             <li class="list-header">settings</li>
                 
                             <!--Menu list item-->
-                            <li class="active-sub">
-                                <a href="#">
+                            <li class="">
+                                <router-link to="/">
                                     <i class="demo-pli-home"></i>
                                     <span class="menu-title">Home</span>
                                     <!-- <i class="arrow"></i> -->
-                                </a>
+                                </router-link>
                 
                                 <!--Submenu-->
                                 <!-- <ul class="collapse in">
@@ -118,19 +118,19 @@
                             </li>
 
                             <!-- ======================= 새로 추가 =============================== -->
-                            <li>
-                                <a href="#">
+                            <li class="">
+                                <router-link to="/keyword">
                                     <i class="demo-pli-clock"></i>
                                     <span class="menu-title">Alarm</span>
-                                </a>
+                                </router-link>
                             </li>
 
-                            <li>
+                            <!-- <li>
                                 <a href="#">
                                     <i class="demo-pli-data-settings"></i>
                                     <span class="menu-title">Configuration</span>
                                 </a>
-                            </li>
+                            </li> -->
 
                             <!-- / ======================= 새로 추가 =============================== -->
                 

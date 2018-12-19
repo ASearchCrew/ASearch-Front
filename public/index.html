@@ -4,15 +4,25 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<<<<<<< HEAD
     <link rel="icon" href="<%= BASE_URL %>kt.ico">
     <title>Asearch</title>
 
+=======
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>asearchfront</title>
+    <link rel="manifest" href="manifest.json">
+>>>>>>> fcm_regist
     <!--STYLESHEET-->
     <!--=================================================-->
 
     <!--Open Sans Font [ OPTIONAL ]-->
+<<<<<<< HEAD
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
+=======
+   
+>>>>>>> fcm_regist
     <!--Bootstrap Stylesheet [ REQUIRED ]-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -31,10 +41,28 @@
     <!--Demo [ DEMONSTRATION ]-->
     <link href="css/demo/nifty-demo.min.css" rel="stylesheet">
 
+<<<<<<< HEAD
     <!--Custom scheme [ OPTIONAL ]-->
     <link href="css/themes/type-full/theme-dark-full.min.css" rel="stylesheet">
 
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+=======
+
+    <!--Custom scheme [ OPTIONAL ]-->
+    <link href="css/themes/type-full/theme-dark-full.min.css" rel="stylesheet">
+
+     <!--Bootstrap Table [ OPTIONAL ]-->
+     <link href="plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+
+
+     <!--Font Awesome [ OPTIONAL ]-->
+     <link href="plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+ 
+ 
+     <!--X-editable [ OPTIONAL ]-->
+     <link href="plugins/x-editable/css/bootstrap-editable.css" rel="stylesheet">
+
+>>>>>>> fcm_regist
     <!--=================================================
 
     REQUIRED
@@ -58,7 +86,87 @@
 
     <!-- <link href="css/datetimepicker.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script> -->
+<script>
+var iamToken="aaa";
+const config = {
+  apiKey: 'AIzaSyBBLYinMpNJCp35U6sn_TmvOnFAZMCJNpA',
+  authDomain: 'asearch-8430e.firebaseapp.com',
+  databaseURL: 'https://asearch-8430e.firebaseio.com',
+  projectId: 'asearch-8430e',
+  storageBucket: 'asearch-8430e.appspot.com',
+  messagingSenderId: '788130620748' 
+ }
+ firebase.initializeApp(config);
+ const messaging = firebase.messaging();
+messaging.usePublicVapidKey('BL_huP8DxDLLT6_ABpnBikziMqpvOZMORLVRNKkauozFOXN3o7ZGxqEA5IrlNzj8fkLLxvghyqwvI72wPfncRFk');
 
+messaging.onMessage(function(payload) {
+    console.log('Message received. ', payload);
+    // [START_EXCLUDE]
+    // Update the UI to include the received message.
+    // appendMessage(payload);
+    // [END_EXCLUDE]
+    console.log("push event 발생");
+    // const payload = event.data.json(); 
+    const title = payload.notification.title; 
+    const options = { body : "pupupush",//body: payload.notification.body, 
+        icon: payload.notification.icon, 
+        data: payload.notification.click_action 
+    }; 
+  });
+
+  messaging.requestPermission().then(function() {
+      console.log('Notification permission granted.');
+      // TODO(developer): Retrieve an Instance ID token for use with FCM.
+      // [START_EXCLUDE]
+      // In many cases once an app has been granted notification permission, it
+      // should update its UI reflecting this.
+    //   resetUI();
+    messaging.getToken().then(function(currentToken) {
+      if (currentToken) {
+        // sendTokenToServer(currentToken);
+        // updateUIForPushEnabled(currentToken);
+        iamToken = currentToken;
+                
+      } else {
+        // Show permission request.
+        console.log('여긴 == else')
+        console.log(currentToken)
+        console.log('No Instance ID token available. Request permission to generate one.');
+        // Show permission UI.
+        // updateUIForPushPermissionRequired();
+        // setTokenSentToServer(false);
+      }
+    }).catch(function(err) {
+      console.log('NNNNNNNN');
+        console.log("여기는 그냥 Error 이다.")
+      console.log('An error occurred while retrieving token. ', err);
+    //   showToken('Error retrieving Instance ID token. ', err);
+    //   setTokenSentToServer(false);
+    });
+      // [END_EXCLUDE]
+    }).catch(function(err) {
+      console.log('Unable to get permission to notify.', err);
+    });
+
+
+// if(navigator.serviceWorker){ navigator.serviceWorker.register('js/sw.js') 
+// .then(function(reg){console.log('서비스워커 등록성공 :', reg)}) 
+// .catch(function(error){console.log('서비스워커 등록실패 :', error)}); }
+
+
+// const token = messaging.getToken();
+//       console.log('★★token :', token);
+      
+//       return token;
+//     } catch (error) {
+//       console.error(error);
+//     }
+
+</script>
   </head>
   <body>
     <noscript>
@@ -102,8 +210,41 @@
     <!--velocity -> 트랜지션 이용-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
 
+<<<<<<< HEAD
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment-with-locales.min.js"></script>
     <script src="js/datetimepicker.js"></script> -->
+=======
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment-with-locales.min.js"></script>
+    <script src="js/datetimepicker.js"></script>
+
+    <!--Demo script [ DEMONSTRATION ]-->
+    <script src="js/demo/nifty-demo.min.js"></script>
+
+    
+    <!--Bootstrap Table Sample [ SAMPLE ]-->
+    <script src="js/demo/tables-bs-table.js"></script>
+
+
+    <!--X-editable [ OPTIONAL ]-->
+    <script src="plugins/x-editable/js/bootstrap-editable.min.js"></script>
+
+
+    <!--Bootstrap Table [ OPTIONAL ]-->
+    <script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+
+
+    <!--Bootstrap Table Extension [ OPTIONAL ]-->
+    <script src="plugins/bootstrap-table/extensions/editable/bootstrap-table-editable.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+
+    
+>>>>>>> fcm_regist
 
     <!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
   </body>

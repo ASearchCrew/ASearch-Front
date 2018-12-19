@@ -7,8 +7,14 @@
                 <!--Brand logo & name-->
                 <!--================================-->
                 <div class="navbar-header">
+<<<<<<< HEAD
                     <a href="index.html" class="navbar-brand">
                         <img src="../assets/kt.png" alt="kt Logo" class="brand-icon">
+=======
+                    <a href="/" class="navbar-brand" style="background-color: #2E343E">
+                        <img url="./img/kt_ci.png"> 
+                        <!-- alt="kt Logo" class="brand-icon" -->
+>>>>>>> fcm_regist
                         <div class="brand-title">
                             <span class="brand-text">ASearch</span>
                         </div>
@@ -20,7 +26,7 @@
 
                 <!--Navbar Dropdown-->
                 <!--================================-->
-                <div class="navbar-content">
+                <div class="navbar-content" style="background-color: #2E343E">
                     <ul class="nav navbar-top-links">
 
                         <!--Navigation toogle button-->
@@ -52,9 +58,15 @@
                         <!--Notification dropdown-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                         <li class="dropdown">
+                            
+                            <a>
+                                <div @click="mngConfig"><i class="demo-pli-data-settings"></i></div>
+                            </a>
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                                <i class="demo-pli-bell"></i>
-                                <span class="badge badge-header badge-danger"></span>
+                                <div>
+                                    <i class="demo-pli-bell"></i>
+                                    <span class="badge badge-header badge-danger"></span>
+                                </div>
                             </a>
 
 
@@ -159,8 +171,24 @@
 
 
 <script>
+import PopupMngConfig from '../spa/Dashboard/PopupMngConfig.vue';
 export default {
-    name: 'Header'
+    name: 'Header',
+    methods : {
+        mngConfig(){
+            this.$modal.show(PopupMngConfig,{
+            hot_table : 'data',
+            modal : this.$modal },{
+            title: 'Server 추가',
+            name: 'dynamic-modal',
+            width : '300px',
+            height : '155px',
+            borderRadius : '8px',
+            draggable: true,
+        
+      });
+        }
+    }
 }
 </script>
 
