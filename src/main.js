@@ -3,12 +3,9 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './routes'
 import VModal from 'vue-js-modal'
-<<<<<<< HEAD
-=======
 import dotenv from 'dotenv';
 
 dotenv.config();
->>>>>>> fcm_regist
 
 Vue.use(VModal)
 Vue.use(VueRouter);
