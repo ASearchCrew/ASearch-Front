@@ -11,27 +11,38 @@ import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
 
 am4core.useTheme(am4themes_animated);
 am4core.useTheme(am4themes_kelly);
-
 export default {
     name: 'countChart',
     data() {
       return {
         data: [],
+        isClicked: false
       }
     },
     mounted : async function() {
-      await this.$http.get('/api/v1/management/logcount/hour/minute')
+      //streaming 여부 체크
+      this.$EventBus.$on('stream', function(isClicked) {
+        this.isClicked = isClicked
+      }.bind(this));
+
+      var vm = this;
+      await vm.$http.get('/api/v1/management/logcount/hour/minute')
       .then((result) => {
-        // console.log(result);
+        console.log(result);
         var tmp = result.data.charDatas;
-        var startTime = new Date(tmp[tmp.length - 1].endTime);
-        var start = startTime.getFullYear() + '-' + startTime.getMonth() + '-' + startTime.getDate();
-        console.log(start)
-        this.data.unshift({ time: start, count: tmp[0].logCount});
-        for(let i = 0; i < tmp.length - 1; i++){
-          this.data.unshift({ time: tmp[i].endTime, count: tmp[i].logCount});
+        for(let i = 0; i < tmp.length ; i++){
+          var curTime = new Date(tmp[i].endTime.toString());
+          var curHour = curTime.getHours();
+          var curMin = curTime.getMinutes();
+          var tmpTime = curHour + ':' + (curMin<10?'0' + curMin:curMin);
+          // if(curHour == 0){
+            var dateTime = new Date(tmp[i].endTime);
+            var date = dateTime.getFullYear() + '-' + (dateTime.getMonth() + 1) + '-' + dateTime.getDate();
+            this.data.unshift({ time: (date + ' ' + tmpTime), count: tmp[i].logCount});
+          // }else{
+          //   this.data.unshift({ time: tmpTime, count: tmp[i].logCount});
+          // }
         }
-        // console.log(this.data)
       })
 
       // Create chart instance
@@ -44,6 +55,20 @@ export default {
       // Create axes
       var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
       categoryAxis.dataFields.category = "time";
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth()+1; //January is 0!
+      var yyyy = today.getFullYear();
+
+      if(dd<10) {
+          dd='0'+dd
+      } 
+
+      if(mm<10) {
+          mm='0'+mm
+      } 
+
+      today = mm+'/'+dd+'/'+yyyy;
       categoryAxis.title.text = "Date & Time";
 
       // First value axis
@@ -57,15 +82,53 @@ export default {
       series.name = "Count";
       series.tooltipText = "{name}: [bold]{valueY}[/]";
       series.columns.template.events.on("hit", function(ev) {
-        console.log("clicked on ", ev.target);
+        console.log("clicked on ", ev.target.dataItem);
         console.log(ev.target.dataItem.categoryX)
-      }, this);
-      // series.columns.template.events.on("propertychanged", function(ev) {
-      //   if(ev.property.indexOf("x") > 0){
-      //     console.log(ev.property)
-      //   }
-      // }, this);
 
+        if(!vm.isClicked){
+          vm.$EventBus.$emit('chartTimeClicked', ev.target.dataItem.categoryX)
+        }
+      }, this);
+
+/* -------------------------------------------------------------------------------- */
+      document.addEventListener("visibilitychange", function() {
+          if (document.hidden) {
+              if (interval) {
+                  clearInterval(interval);
+              }
+          }
+          else {
+              startInterval();
+          }
+      }, false);
+
+      // add data
+      var interval;
+      function startInterval() {
+          interval = setInterval(async function() {
+              await vm.$http.get('/api/v1/management/logcount/hour/minute')
+              .then((result) => {
+                // console.log(result);
+                var tmp = result.data.charDatas;
+                for(let i = tmp.length - 1; i >= 0; i--){
+                  var curTime = new Date(tmp[i].endTime.toString());
+                  var curHour = curTime.getHours();
+                  var curMin = curTime.getMinutes();
+                  var tmpTime = curHour + ':' + (curMin<10?'0' + curMin:curMin);
+                  // if(curHour == 0){
+                    var dateTime = new Date(tmp[i].endTime);
+                    var date = dateTime.getFullYear() + '-' + (dateTime.getMonth() + 1) + '-' + dateTime.getDate();
+                    chart.addData({ time: (date + ' ' + tmpTime), count: tmp[i].logCount}, 1);
+                  // }else{
+                  //   chart.addData({ time: tmpTime, count: tmp[i].logCount}, 1);
+                  // }
+                }
+              })
+          }, 3000);
+      }
+
+      startInterval();
+/* -------------------------------------------------------------------------------- */
       // Second series
       var series2 = chart.series.push(new am4charts.LineSeries());
       series2.dataFields.valueY = "count";

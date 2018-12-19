@@ -8,7 +8,8 @@
                     <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fas fa-server icon-lg icon-fw"></i> Server List</p>
                     <div class="list-group bg-trans">
                        <div v-for="server in serverList" :key="server.hostName" class="list-group-item">
-                           <a href="#" class="rainbow-button" v-bind:alt="server.hostName"></a>
+                           <a v-if="server.lastTime < 9999" href="#" class="rainbow-button" v-bind:alt="server.hostName" @click="serverButtonClick(server.hostName)"></a>
+                           <a v-else href="#" class="rainbow-button-dead" v-bind:alt="server.hostName" @click="serverButtonClick(server.hostName)"></a>
                        </div>
                     </div>
 
@@ -18,7 +19,7 @@
                     <p class="pad-all text-main text-sm text-uppercase text-bold"><i class="fab fa-chrome icon-lg icon-fw"></i> WAS List</p>
                     <div class="list-group bg-trans">
                        <div class="list-group-item">
-                            <a href="#" class="rainbow-button" alt="WAS 1"></a>
+                            <a href="#" class="rainbow-button-dead" alt="WAS 1"></a>
                        </div>
                        <div class="list-group-item">
                             <a href="#" class="rainbow-button" alt="WAS 2"></a>
@@ -40,7 +41,7 @@
                            <a href="#" class="rainbow-button" alt="Database 1"></a>
                        </div>
                         <div class="list-group-item">
-                           <a href="#" class="rainbow-button" alt="Database 2"></a>
+                           <a href="#" class="rainbow-button-dead" alt="Database 2"></a>
                        </div>
                        <div class="list-group-item">
                            <a href="#" class="rainbow-button" alt="Database 3"></a>
@@ -72,11 +73,14 @@ export default {
     },
     methods: {
         requestServerList: function() {
-            this.$http.get('/api/v1/management/server')
+            this.$http.get('/api/v1/management/servertime')
             .then((result) => {
-                this.serverList = result.data
+                this.serverList = result.data;
             });
         },
+        serverButtonClick: function(hostName) {
+            this.$EventBus.$emit('serverButtonClicked', hostName);
+        }
     }
 }
 </script>
@@ -108,6 +112,26 @@ a {
   border: none;
   animation:slidebg 2s linear infinite;
 }
+
+.rainbow-button-dead {
+/*
+  width:calc(18vw + 2px);
+  height:calc(4vw + 2px);
+*/
+  height: 40px;
+  background-image: linear-gradient(90deg, rgb(49, 49, 49) 0%, rgb(54, 54, 54) 49%, rgb(56, 56, 56) 80%, rgb(58, 58, 58) 100%);
+  border-radius:5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-transform:uppercase;
+  font-size:15px;
+  font-weight:bold;
+  padding: 2px;
+  border: none;
+  animation:slidebg 2s linear infinite;
+}
+
 .rainbow-button:after {
   content:attr(alt);
 /*
@@ -123,7 +147,26 @@ a {
   border-radius:5px;
 }
 
+.rainbow-button-dead:after {
+  content:attr(alt);
+/*
+  width:18vw;
+  height:4vw;
+*/
+  width: 100%;
+  height: 36px;
+  background-color:#3d4553;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:5px;
+}
+
 .rainbow-button:hover:after {
+  background-color:#2674fca2;
+}
+
+.rainbow-button-dead:hover:after {
   background-color:#2674fca2;
 }
 

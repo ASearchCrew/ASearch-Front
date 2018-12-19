@@ -112,6 +112,12 @@ export default {
                 vm.wrapLongLines(false);
             }
         });
+
+        this.$EventBus.$on('chartTimeClicked', function(clickedTime) {
+            $('#datetimepicker').val(clickedTime).datetimepicker("update");
+            this.time = clickedTime
+            this.sendTime(this.time)
+        }.bind(this));
     },
     methods: {
         streamBtnClick: function() {

@@ -17,7 +17,9 @@
                       <div v-if="!isBeforeData" id="noDataOnTop">No additional entries found, Wheel up again!</div>
                       <ul v-if="!noData" id="log" class="timeline-custom">
                         <li v-for="result in results" style="height:auto" :key="result.id" @mouseover="mouseInCell" @mouseout="mouseOutCell">
-                            <div class="timeline-time-custom" scale="medium">{{ result.timeStamp.replace("T", '&nbsp;&nbsp;').replace("Z", " ") }}</div>
+                            <div class="timeline-time-custom" scale="medium">
+                              {{ new Date(result.timeStamp).toLocaleString() + '.' + new Date(result.timeStamp).getMilliseconds()}}
+                            </div>
                             <div class="timeline-icon-custom"><a href="#"></a></div>
                             <div class="timeline-body-custom" v-bind:class="{ 'noWrapping': !isChecked }" scale="medium" v-on:click="showDetail(result.id, result.timeStamp)">{{ result.message }}</div>
                         </li>
@@ -62,6 +64,7 @@ export default {
   data() {
     return {
       query: '',
+      hostName: 'filebeat',
       calendarEndTime: null,
       time: null,
       results: [],
@@ -74,7 +77,7 @@ export default {
       offset: 0,
       isBeforeData: true,
       isAfterData: true,
-      noData: false
+      noData: false,
     }
   },
   created() {
@@ -101,6 +104,16 @@ export default {
     this.$EventBus.$on('textSizeChangeReq', this.textSizeChanged);
     // Wrap Long Lines check
     this.$EventBus.$on('wrapLongLines', this.wrapLongLines);
+
+    // ServerList 버튼 클릭(hostName 셋팅)
+    this.$EventBus.$on('serverButtonClicked', function(hostName) {
+      console.log(hostName)
+      this.hostName = hostName;
+      
+      console.log(this.hostName)
+      
+      this.initRequest();
+    }.bind(this));
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -161,7 +174,7 @@ export default {
             search: this.query,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat',
+            hostName: this.hostName,
             id: id
           }
         }:{
@@ -171,12 +184,12 @@ export default {
             time: myDate,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat',
+            hostName: this.hostName,
             id: id
           }
         }
         this.dateReceived = false
-        await this.$http.get('/api/v1/log', config)
+        await this.$http.get('/api/v1/logs', config)
         .then((result) => {
           this.tmp = result.data.logs;
           if(this.tmp.length > 0){
@@ -212,7 +225,7 @@ export default {
             search: this.query,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat',
+            hostName: this.hostName,
             id: id
           }
         }:{
@@ -222,12 +235,12 @@ export default {
             time: myDate,
             initialCount: this.count,
             upScrollOffset: this.offset,
-            hostName: 'filebeat',
+            hostName: this.hostName,
             id: id
           }
         }
         this.dateReceived = false
-        await this.$http.get('/api/v1/log', config)
+        await this.$http.get('/api/v1/logs', config)
         .then((result) => {
           this.tmp = result.data.logs;
           this.count = result.data.sumCount;
@@ -247,7 +260,7 @@ export default {
       }
     },
     showDetail(id, timeStamp){
-      this.$http.get(`/api/v1/log/${id}`)
+      this.$http.get(`/api/v1/logs/${id}`)
       .then((result) => {
         console.log(result);
         this.$modal.show('log-detail-view', { 'logInfo': result, 'timeStamp': timeStamp})
@@ -286,7 +299,7 @@ export default {
           search: this.query,
           initialCount: 0,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }:{
         params: {
@@ -295,10 +308,10 @@ export default {
           isStream: false,
           initialCount: 0,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }
-      await this.$http.get('/api/v1/log', config)
+      await this.$http.get('/api/v1/logs', config)
       .then((result) => {
         console.log(result);
         this.tmp = result.data.logs;
@@ -321,14 +334,14 @@ export default {
       var t = new Date(this.results[this.results.length-1].timeStamp)
       var myDate = t.getTime();
       var id = this.results[this.results.length-1].id;
-      await this.$http.get('/api/v1/log', {
+      await this.$http.get('/api/v1/logs', {
         params: {
           direction: 'stream',
           isStream: true,
           time: myDate,
           initialCount: 0,
           upScrollOffset: 0,
-          hostName: 'filebeat',
+          hostName: this.hostName,
           id: id
         }
       })
@@ -359,7 +372,7 @@ export default {
           search: this.query,
           initialCount: 0,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }:{
         params: {
@@ -368,10 +381,10 @@ export default {
           isStream: true,
           initialCount: 0,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }
-      await this.$http.get('/api/v1/log', config)
+      await this.$http.get('/api/v1/logs', config)
       .then((result) => {
         this.tmp = result.data.logs;
         this.results = [];
@@ -406,7 +419,7 @@ export default {
           search: this.query,
           initialCount: this.count,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }:{
         params: {
@@ -415,10 +428,10 @@ export default {
           time: myDate,
           initialCount: this.count,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }
-      await this.$http.get('/api/v1/log', config)
+      await this.$http.get('/api/v1/logs', config)
       .then((result) => {
         console.log(result);
         this.tmp = result.data.logs;
@@ -452,7 +465,7 @@ export default {
           isStream: false,
           initialCount: this.count,
           upScrollOffset: 0,
-          hostName: 'filebeat',
+          hostName: this.hostName,
           search: this.query
         }
       }:{
@@ -463,10 +476,10 @@ export default {
           isStream: false,
           initialCount: this.count,
           upScrollOffset: 0,
-          hostName: 'filebeat'
+          hostName: this.hostName
         }
       }
-      await this.$http.get('/api/v1/log', config)
+      await this.$http.get('/api/v1/logs', config)
       .then((result) => {
         console.log(result);
         this.tmp = result.data.logs;
