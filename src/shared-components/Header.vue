@@ -7,11 +7,8 @@
                 <!--Brand logo & name-->
                 <!--================================-->
                 <div class="navbar-header">
-<!-- <<<<<<< HEAD -->
                     <a href="/" class="navbar-brand">
                         <img src="../assets/kt.png" alt="kt Logo" class="brand-icon">
-<!-- ======= -->
-<!-- >>>>>>> fcm_regist -->
                         <div class="brand-title">
                             <span class="brand-text">ASearch</span>
                         </div>
