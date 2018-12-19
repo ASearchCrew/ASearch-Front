@@ -360,41 +360,22 @@ export default {
       for (var i = 0; i <10; i++) {
         data.push({ date1: new Date(this.chartDataList[0].chartDatas[i].date), count1: this.chartDataList[0].chartDatas[i].count });
       }
-      for (var i = 0; i <10; i++) {
-        data.push({ date2: new Date(this.chartDataList[1].chartDatas[i].date), count2: this.chartDataList[1].chartDatas[i].count });
-      }
-      chart.data = data;
+      if(this.chartDataList.length>1){
+        for (var i = 0; i <10; i++) {
+          data.push({ date2: new Date(this.chartDataList[1].chartDatas[i].date), count2: this.chartDataList[1].chartDatas[i].count });
+        }
 
-      let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis.renderer.grid.template.location = 0;
-      dateAxis.renderer.labels.template.fill = am4core2.color("#427691");
+        let dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
+        dateAxis2.renderer.grid.template.location = 0;
+        dateAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
 
-      let dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
-      dateAxis2.renderer.grid.template.location = 0;
-      dateAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
+        let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis2.tooltip.disabled = true;
+        valueAxis2.renderer.grid.template.strokeDasharray = "2,3";
+        valueAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
+        valueAxis2.renderer.minWidth = 60;
 
-      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis.tooltip.disabled = true;
-      valueAxis.renderer.labels.template.fill = am4core2.color("#427691");
-
-      valueAxis.renderer.minWidth = 60;
-
-      let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
-      valueAxis2.tooltip.disabled = true;
-      valueAxis2.renderer.grid.template.strokeDasharray = "2,3";
-      valueAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
-      valueAxis2.renderer.minWidth = 60;
-
-      let series = chart.series.push(new am4charts.LineSeries());
-      series.name = this.chartDataList[0].hostName;
-      series.dataFields.dateX = "date1";
-      series.dataFields.valueY = "count1";
-      series.tooltipText = "{valueY.value}";
-      series.fill = am4core2.color("#427691");
-      series.stroke = am4core2.color("#427691");
-      series.strokeWidth = 3;
-
-      let series2 = chart.series.push(new am4charts.LineSeries());
+         let series2 = chart.series.push(new am4charts.LineSeries());
       series2.name = this.chartDataList[1].hostName;
       series2.dataFields.dateX = "date2";
       series2.dataFields.valueY = "count2";
@@ -405,6 +386,37 @@ export default {
       series2.stroke = am4core2.color("#6771DC");
       series2.strokeWidth = 3;
 
+      valueAxis2.renderer.grid.template.strokeOpacity = 0.07;
+      dateAxis2.renderer.grid.template.strokeOpacity = 0.07;
+
+      }
+      chart.data = data;
+
+      let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+      dateAxis.renderer.grid.template.location = 0;
+      dateAxis.renderer.labels.template.fill = am4core2.color("#427691");
+
+      
+
+      let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      valueAxis.tooltip.disabled = true;
+      valueAxis.renderer.labels.template.fill = am4core2.color("#427691");
+
+      valueAxis.renderer.minWidth = 60;
+
+      
+
+      let series = chart.series.push(new am4charts.LineSeries());
+      series.name = this.chartDataList[0].hostName;
+      series.dataFields.dateX = "date1";
+      series.dataFields.valueY = "count1";
+      series.tooltipText = "{valueY.value}";
+      series.fill = am4core2.color("#427691");
+      series.stroke = am4core2.color("#427691");
+      series.strokeWidth = 3;
+
+     
+
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = dateAxis;
 
@@ -412,8 +424,7 @@ export default {
       chart.legend.parent = chart.plotContainer;
       chart.legend.zIndex = 100;
 
-      valueAxis2.renderer.grid.template.strokeOpacity = 0.07;
-      dateAxis2.renderer.grid.template.strokeOpacity = 0.07;
+      
       dateAxis.renderer.grid.template.strokeOpacity = 0.07;
       valueAxis.renderer.grid.template.strokeOpacity = 0.07;
     },

@@ -1,4 +1,5 @@
 <template ref="popup">
+<modal name="popup-mng-config" transition="pop-out" height="auto" >
 <div style="" class="panel">
     <div class="panel-body" style="padding:15px">
         <div class="form-group">
@@ -9,9 +10,10 @@
     </div>
     <div class="panel-footer text-right">
         <button class="btn btn-primary" @click="updatePath()">Save</button>
-        <button style="margin-left:10px;" class="btn btn-primary" @click="$emit('close')">Cancel</button>
+        <button style="margin-left:10px;" class="btn btn-primary" @click="closeModal">Cancel</button>
     </div>
 </div>
+</modal>
 </template>
 
 <script>
@@ -42,6 +44,9 @@ export default {
             });
             this.$emit('close');
         }.bind(this));       
+    },
+    closeModal(){
+        this.$modal.hide('popup-mng-config'); 
     }
   },
   beforeDestroy(){

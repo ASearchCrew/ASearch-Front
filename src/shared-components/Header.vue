@@ -156,7 +156,7 @@
                 </div>
                 <!--================================-->
                 <!--End Navbar Dropdown-->
-
+            <popup-mng-config/>
             </div>
         </header>
         <!--===================================================-->
@@ -166,22 +166,29 @@
 
 <script>
 import PopupMngConfig from '../spa/Dashboard/PopupMngConfig.vue';
+
 export default {
+    components: {
+        PopupMngConfig
+    },
     name: 'Header',
     methods : {
         mngConfig(){
-            this.$modal.show(PopupMngConfig,{
-            hot_table : 'data',
-            modal : this.$modal },{
-            title: 'Server 추가',
-            name: 'dynamic-modal',
-            width : '300px',
-            height : '155px',
-            borderRadius : '8px',
-            draggable: true,
-        
-      });
+            // this.$modal.show(PopupMngConfig,{
+            //         hot_table : 'data',
+            //         modal : this.$modal },{
+            //         title: 'Server 추가',
+            //         name: 'dynamic-modal',
+            //         width : '300px',
+            //         height : '155px',
+            //         borderRadius : '8px',
+            //         draggable: true,
+                
+            //         });
+            console.log("tttt");
+            this.$modal.show('popup-mng-config');
         }
+        
     }
 }
 </script>
