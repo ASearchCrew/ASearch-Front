@@ -33,14 +33,15 @@ export default {
           hostName:"",
           hostIp:"",
           interval:"",
-          addEventFlag: false
+          addEventFlag: false,
+          srvUrl : 'http://52.79.220.131:8080' // 배포 
       }
   },
   props : {
   },
   methods : {
     addServer(){
-        const baseURI = 'http://192.168.0.11:8080';
+        const baseURI = this.srvUrl;
         this.$http.post(`${baseURI}/api/v1/management/server`,{
             hostName : this.hostName,
             hostIp : this.hostIp,

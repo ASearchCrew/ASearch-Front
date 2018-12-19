@@ -19,7 +19,7 @@ export default {
   data:function(){
       return {
           inputPath:"",
-          srvUrl : 'http://192.168.0.7:8080'
+          srvUrl : 'http://52.79.220.131:8080' // 배포 
       }
   },
   props : {

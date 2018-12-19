@@ -16,9 +16,11 @@
           <div class="panel-collapse collapse in" id="toggleDiv-1" style="">
             <div class="ht-event-btns">
 
-              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.hostIp, server.hostName, index)">
                 <router-link to="/logViewer">
+
                   <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
+                    
                     <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
                     <p v-else><span id="aliveText">alive</span></p>
                   </div>
@@ -53,7 +55,7 @@
           <div class="panel-collapse collapse in" id="toggleDiv-2" style="">
 
             <div class="ht-event-btns">
-              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.hostIp, server.hostName, index)">
                 <router-link to="/logViewer">
                   <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
                     <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
@@ -89,7 +91,7 @@
     
               
                <div class="ht-event-btns">
-              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.host_ip, index)">
+              <div v-for="(server, index) in serverList2" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.hostIp, server.hostName, index)">
                 <router-link to="/logViewer">
                   <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
                     <p v-if="server.lastTime==9999"><span id="aliveText">dead</span></p>
@@ -331,10 +333,11 @@ export default {
       ],
       sorting : -1,
       visibleModal :false,
-      srvUrl : 'http://192.168.0.7:8080' // 창호
-      // 'http://52.79.220.131:8080'; // 배포
-      // 'http://192.168.0.11:8080'; // 우영
+      srvUrl :// 'http://192.168.0.7:8080' // 창호
+        'http://52.79.220.131:8080' // 배포
+       // 'http://192.168.0.11:8080' // 우영
     }
+
   },
   filters:{
     frontDateFormat(value) {
@@ -522,14 +525,59 @@ export default {
     AddOneServer(param){
       this.serverList.push(param);
     },
-    delServer(param, index){
+    delServer(param, hostName, index){
       if(confirm("삭제 하시겠습니까?")){
+        // const baseURI = this.srvUrl;
+        // this.$http.delete(`${baseURI}/api/v1/management/deleteserver?hostIp=`+param).then((result) => {
+        //     console.log(result);
+        //     this.serverList.splice(index,1);
+        // });    
         const baseURI = this.srvUrl;
-        this.$http.delete(`${baseURI}/api/v1/management/deleteserver?hostIp=`+param).then((result) => {
+        this.$http.delete(`${baseURI}/api/v1/management/server`,{
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data : {
+                hostIp : param,
+                hostName : hostName
+                
+            }    
+        }).then(function(result){
             console.log(result);
+            //console.log(this.serverList);
             this.serverList.splice(index,1);
-        });    
+        }.bind(this));
       }      
+    },
+    todo(){      
+        var test = setInterval(function (){ this.checkHealth() }.bind(this), 30000);
+    },
+    checkHealth(){
+      this.$http.get(this.srvUrl+`/api/v1/management/servertime`)
+      .then((result) => {
+          // console.log(result);
+          this.serverList = result.data;
+          this.serverList = this.serverList.slice(0).sort((a, b) => a.lastTime < b.lastTime ? this.sorting : -this.sorting );
+      });
+    },
+    setToken(token){
+      const baseURI = this.srvUrl;
+      this.$http.post(`${baseURI}/api/v1/logs/admin/token`,{
+          token : token
+      })
+      .then((result) => {
+          console.log(result);
+      })
+      .catch(function(err) {
+            //   $.niftyNoty({
+            //     type: 'danger',
+            //     message : '토큰등록실패 ',
+            //     container : 'floating',
+            //     timer : 5000
+            // });
+            console.log(err);
+        });    
+        
     }
   },
   mounted(){
@@ -540,7 +588,7 @@ export default {
         console.log(result);
         this.serverList = result.data;
         this.serverList = this.serverList.slice(0).sort((a, b) => a.lastTime < b.lastTime ? this.sorting : -this.sorting );
-        askForPermissioToReceiveNotifications();
+        // askForPermissioToReceiveNotifications();
         this.$http.get(`${baseURI}/api/v1/management/datecount`)
         .then((result) => {
             this.chartDataList = result.data;
@@ -557,20 +605,17 @@ export default {
         });    
     });    
 
+    this.setToken(iamToken);
 
     this.$EventBus.$on('closeAddModal', this.AddOneServer);
 
+    this.todo();
   },
   create(){
     
   },
   computed : {
-    // visibleModal () {
-    //   if(!visibleModal){
-    //     alert();
-    //     // searchServerList();
-    //   }
-    // }
+   
   },
   beforeDestroy() {
     if (this.chart) {

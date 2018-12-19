@@ -57,8 +57,8 @@ export default {
                 // }
             ],
             srvUrl : //'http://192.168.0.7:8080' // 창호 
-                    'http://192.168.0.11:8080' // 우영
-                     //'http://52.79.220.131:8080' // 배포 
+                    //'http://192.168.0.11:8080' // 우영
+                     'http://52.79.220.131:8080' // 배포 
         }
     },
     methods : {
@@ -85,6 +85,13 @@ export default {
                         timer : 5000
                     });
                     console.log(data);
+                }).catch(function(err) {
+                     $.niftyNoty({
+                        type: 'danger',
+                        message : '<p style="font-size:20px;">keyword <strong>[ '+userKeyword+' ]</strong> save fail!<p>',
+                        container : 'floating',
+                        timer : 5000
+                    });
                 });
             }
         },

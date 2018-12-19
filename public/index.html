@@ -81,8 +81,10 @@
     <link href="css/datetimepicker.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script> -->
 <script>
-
+var iamToken="aaa";
 const config = {
   apiKey: 'AIzaSyBBLYinMpNJCp35U6sn_TmvOnFAZMCJNpA',
   authDomain: 'asearch-8430e.firebaseapp.com',
@@ -99,8 +101,15 @@ messaging.onMessage(function(payload) {
     console.log('Message received. ', payload);
     // [START_EXCLUDE]
     // Update the UI to include the received message.
-    appendMessage(payload);
+    // appendMessage(payload);
     // [END_EXCLUDE]
+    console.log("push event 발생");
+    // const payload = event.data.json(); 
+    const title = payload.notification.title; 
+    const options = { body : "pupupush",//body: payload.notification.body, 
+        icon: payload.notification.icon, 
+        data: payload.notification.click_action 
+    }; 
   });
 
   messaging.requestPermission().then(function() {
@@ -114,8 +123,8 @@ messaging.onMessage(function(payload) {
       if (currentToken) {
         // sendTokenToServer(currentToken);
         // updateUIForPushEnabled(currentToken);
-        console.log('여긴 == if')
-        console.log(currentToken)
+        iamToken = currentToken;
+                
       } else {
         // Show permission request.
         console.log('여긴 == else')
