@@ -4,6 +4,6 @@ import Keyword from './spa/Keyword/Keyword.vue';
 
 export default[
   {path:'/', component:Dashboard},
-  {path:'/logViewer', component:LogViewer},
+  {path:'/logViewer/:hostName', name: 'logViewer', component:LogViewer , props: true},
   {path:'/keyword', component:Keyword}
 ]

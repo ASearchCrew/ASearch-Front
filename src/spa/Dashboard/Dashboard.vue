@@ -16,8 +16,9 @@
           <div class="panel-collapse collapse in" id="toggleDiv-1" style="">
             <div class="ht-event-btns">
 
-              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" v-on:contextmenu.prevent="delServer(server.hostIp, server.hostName, index)">
-                <router-link to="/logViewer">
+              <div v-for="(server, index) in serverList" :key="server.index" v-bind:class="[server.lastTime!=9999 ?'ht-event-btn stl'+(index%7+1): 'ht-event-btn']" @click="goToLogViewer(server.hostName)" v-on:contextmenu.prevent="delServer(server.hostIp, server.hostName, index)">
+                <!-- <router-link to="/logViewer/ip-172-31-31-55"> -->
+                <router-link :to="{ name: 'logViewer', params: { hostName : server.hostName } }">
 
                   <div v-bind:class="[ server.lastTime==9999 ? 'flag dead' : 'flag' ]">
                     
@@ -172,7 +173,7 @@
  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>
 
 <script>
-import * as am4core from "@amcharts/amcharts4/core";
+import * as am4core2 from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import am4themes_dark from "@amcharts/amcharts4/themes/dark";
@@ -180,8 +181,8 @@ import PopupAddServer from './PopupAddServer.vue';
 
 import {askForPermissioToReceiveNotifications} from '../../../public/js/push-notification';
 
-am4core.useTheme(am4themes_animated);
-am4core.useTheme(am4themes_dark);
+am4core2.useTheme(am4themes_animated);
+am4core2.useTheme(am4themes_dark);
 
 export default {
   data (){
@@ -350,7 +351,7 @@ export default {
   
   methods:{
     createChart1(){
-      let chart = am4core.create("chartdiv", am4charts.XYChart);
+      let chart = am4core2.create("chartdiv", am4charts.XYChart);
       
       let data = [];
       for (var i = 0; i <10; i++) {
@@ -363,22 +364,22 @@ export default {
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;
-      dateAxis.renderer.labels.template.fill = am4core.color("#427691");
+      dateAxis.renderer.labels.template.fill = am4core2.color("#427691");
 
       let dateAxis2 = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis2.renderer.grid.template.location = 0;
-      dateAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
+      dateAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
 
       let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis.tooltip.disabled = true;
-      valueAxis.renderer.labels.template.fill = am4core.color("#427691");
+      valueAxis.renderer.labels.template.fill = am4core2.color("#427691");
 
       valueAxis.renderer.minWidth = 60;
 
       let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
       valueAxis2.tooltip.disabled = true;
       valueAxis2.renderer.grid.template.strokeDasharray = "2,3";
-      valueAxis2.renderer.labels.template.fill = am4core.color("#6771DC");
+      valueAxis2.renderer.labels.template.fill = am4core2.color("#6771DC");
       valueAxis2.renderer.minWidth = 60;
 
       let series = chart.series.push(new am4charts.LineSeries());
@@ -386,8 +387,8 @@ export default {
       series.dataFields.dateX = "date1";
       series.dataFields.valueY = "count1";
       series.tooltipText = "{valueY.value}";
-      series.fill = am4core.color("#427691");
-      series.stroke = am4core.color("#427691");
+      series.fill = am4core2.color("#427691");
+      series.stroke = am4core2.color("#427691");
       series.strokeWidth = 3;
 
       let series2 = chart.series.push(new am4charts.LineSeries());
@@ -397,8 +398,8 @@ export default {
       // series2.yAxis = valueAxis2;
       // series2.xAxis = dateAxis2;
       series2.tooltipText = "{valueY.value}";
-      series2.fill = am4core.color("#6771DC");
-      series2.stroke = am4core.color("#6771DC");
+      series2.fill = am4core2.color("#6771DC");
+      series2.stroke = am4core2.color("#6771DC");
       series2.strokeWidth = 3;
 
       chart.cursor = new am4charts.XYCursor();
@@ -414,12 +415,12 @@ export default {
       valueAxis.renderer.grid.template.strokeOpacity = 0.07;
     },
     createChart2(){
-      let chart = am4core.create("chartdiv2", am4charts.XYChart);
+      let chart = am4core2.create("chartdiv2", am4charts.XYChart);
       chart.data = this.chartDataList2;
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;
-      dateAxis.renderer.labels.template.fill = am4core.color("#fff");
+      dateAxis.renderer.labels.template.fill = am4core2.color("#fff");
 
 
 
@@ -460,7 +461,7 @@ export default {
         series.name = Object.keys(this.chartDataList2[0])[1];
         series.dataFields.valueY = Object.keys(this.chartDataList2[0])[1];
         series.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-        series.tooltip.background.fill = am4core.color("#FFF");
+        series.tooltip.background.fill = am4core2.color("#FFF");
         series.tooltip.getStrokeFromObject = true;
         series.tooltip.background.strokeWidth = 1;
         series.tooltip.getFillFromObject = false;
@@ -476,7 +477,7 @@ export default {
         series2.dataFields.dateX = "date";
         series2.dataFields.valueY = Object.keys(this.chartDataList2[0])[2];
         series2.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-        series2.tooltip.background.fill = am4core.color("#FFF");
+        series2.tooltip.background.fill = am4core2.color("#FFF");
         series2.tooltip.getFillFromObject = false;
         series2.tooltip.getStrokeFromObject = true;
         series2.tooltip.background.strokeWidth = 1;
@@ -492,7 +493,7 @@ export default {
         series3.dataFields.dateX = "date";
         series3.dataFields.valueY = Object.keys(this.chartDataList2[0])[3];
         series3.tooltipHTML = "<span style='font-size:14px; color:#000000;'><b>{valueY.value}</b></span>";
-        series3.tooltip.background.fill = am4core.color("#FFF");
+        series3.tooltip.background.fill = am4core2.color("#FFF");
         series3.tooltip.getFillFromObject = false;
         series3.tooltip.getStrokeFromObject = true;
         series3.tooltip.background.strokeWidth = 1;
@@ -578,6 +579,10 @@ export default {
             console.log(err);
         });    
         
+    },
+    goToLogViewer(hostName){
+      console.log("goToLogViewer > "+hostName);
+      this.$EventBus.$emit('buttonClickInMain', hostName);
     }
   },
   mounted(){

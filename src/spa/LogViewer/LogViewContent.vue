@@ -40,7 +40,7 @@
                                 </form>
                             </div> -->
                             <hr class="new-section-sm bord-no">
-                            <div class="pad-top"><a class="btn btn-primary" href="index.html">Return Home</a></div>
+                            <div class="pad-top"><a class="btn btn-primary" href="/">Return Home</a></div>
                         </div>
                       </div>
                       <!-- </div> -->
@@ -56,7 +56,7 @@
 </template>
 <script>
 import LogDetailView from './LogDetailView.vue'
-
+import Dashboard from '../Dashboard/Dashboard.vue'
 export default {
   components: {
     LogDetailView
@@ -77,12 +77,11 @@ export default {
       offset: 0,
       isBeforeData: true,
       isAfterData: true,
-      noData: false,
+      noData: false
     }
   },
   created() {
-    // 초기 로그 요청
-    this.initRequest();
+    this.fetchData()
   },
   mounted() {
     // Stream 버튼 클릭 시 스트리밍 실행 / 정지
@@ -111,6 +110,15 @@ export default {
       this.hostName = hostName;
       
       console.log(this.hostName)
+
+      this.initRequest();
+    }.bind(this));
+    // ServerList 버튼 클릭(hostName 셋팅) 메인화면에서..
+    this.$EventBus.$on('buttonClickInMain', function(hostName) {
+      console.log(hostName)
+      this.hostName = hostName;
+      
+      console.log(this.hostName)
       
       this.initRequest();
     }.bind(this));
@@ -120,6 +128,11 @@ export default {
     this.interval = null
   },
   methods: {
+     async fetchData () {
+      this.hostName = null;
+      this.hostName = await this.$router.app._route.params.hostName;
+      this.initRequest();
+    },
     wrapLongLines(isChecked){
       this.isChecked = isChecked;
     },
@@ -314,9 +327,11 @@ export default {
       await this.$http.get('/api/v1/logs', config)
       .then((result) => {
         console.log(result);
+        console.log('afdsafdsafsdafdsafasd')
         this.tmp = result.data.logs;
         if(this.tmp.length > 0){
           this.noData = false;
+          console.log('data exist')
         }else{
           this.noData = true;
           return;

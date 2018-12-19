@@ -1,5 +1,5 @@
 <template>
-    <div class="mychartdiv" id="chartdiv">
+    <div class="mychartdiv" id="chartdiv5">
     </div>
 </template>
 
@@ -46,7 +46,7 @@ export default {
       })
 
       // Create chart instance
-      var chart = am4core.create("chartdiv", am4charts.XYChart);
+      var chart = am4core.create("chartdiv5", am4charts.XYChart);
 
       // Add data
       chart.data = this.data;
