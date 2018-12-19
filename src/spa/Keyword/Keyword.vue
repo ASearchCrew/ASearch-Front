@@ -16,7 +16,7 @@
                                 <tr v-for="(keyword,index) in data.keywords" :key="index">
                                     <td>
                                         <template v-if="keyword.edit">
-                                            <input ref="keyInput" class="form-control input-lg" v-model="userKeyword" @keyup.enter="addData(keyword, index,userKeyword, data.hostName)"  >
+                                            <input ref="keyInput" id="keyInput" class="form-control input-lg" v-model="userKeyword" @keyup.enter="addData(keyword, index,userKeyword, data.hostName)"  >
                                         </template>
                                         <template v-else>
                                             <span><h3 class="panel-title" style="padding-left:10px">{{keyword.keyword}}</h3></span>
@@ -58,12 +58,12 @@ export default {
             ],
             srvUrl : //'http://192.168.0.7:8080' // 창호 
                     //'http://192.168.0.11:8080' // 우영
-                     'http://52.79.220.131:8080' // 배포 
+                    'http://52.79.220.131:8080' // 배포 
         }
     },
     methods : {
         addRow(idx){
-            var data = {"keyword":"", "edit":true};
+            var data = {"keyword":" ", "edit":true};
             this.datas[idx].keywords.push(data);
             //this.$nextTick(() => this.$refs.keyInput.focus());
         },
@@ -84,14 +84,15 @@ export default {
                         container : 'floating',
                         timer : 5000
                     });
+                    this.userKeyword=" ";
                     console.log(data);
                 }).catch(function(err) {
-                     $.niftyNoty({
-                        type: 'danger',
-                        message : '<p style="font-size:20px;">keyword <strong>[ '+userKeyword+' ]</strong> save fail!<p>',
-                        container : 'floating',
-                        timer : 5000
-                    });
+                    //  $.niftyNoty({
+                    //     type: 'danger',
+                    //     message : '<p style="font-size:20px;">keyword <strong>[ '+userKeyword+' ]</strong> save fail!<p>',
+                    //     container : 'floating',
+                    //     timer : 5000
+                    // });
                 });
             }
         },

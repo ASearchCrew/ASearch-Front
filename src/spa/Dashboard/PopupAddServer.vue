@@ -1,4 +1,6 @@
 <template ref="popup">
+<modal name="popup-add-server" transition="pop-out" height="auto" >
+
 <div style="" class="panel">
     <div class="panel-body" style="padding:15px">
         <div><h4 style="margin-top:0px">Add Server</h4></div>
@@ -16,14 +18,14 @@
             <input type="number" v-model="interval" class="form-control"/>
         </div>
 
-
-
     </div>
     <div class="panel-footer text-right">
         <button class="btn btn-primary" @click="addServer()">Save</button>
-        <button style="margin-left:10px;" class="btn btn-primary" @click="$emit('close')">Cancel</button>
+        <button style="margin-left:10px;" class="btn btn-primary" @click="closeModal">Cancel</button>
     </div>
 </div>
+
+</modal>
 </template>
 
 <script>
@@ -55,9 +57,13 @@ export default {
                 timer : 5000
             });
             this.addEventFlag =true;
-            this.$emit('close');
+            // this.$emit('close');
+            this.closeModal();
             
         }.bind(this));       
+    },
+    closeModal(){
+        this.$modal.hide('popup-add-server'); 
     }
   },
   beforeDestroy(){

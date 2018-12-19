@@ -31,7 +31,6 @@ Vue.prototype.$EventBus = new Vue();
 //modal
 Vue.use(VModal, { dynamic: true });
 
-
 new Vue({
   render: h => h(App),
   router: router

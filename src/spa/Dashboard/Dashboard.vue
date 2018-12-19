@@ -150,7 +150,7 @@
       </div>
     </div>
   </div><!--Div:End fluid faq-accordion-->
-   <modals-container :visibleModal.sync="visibleModal" />
+   <popup-add-server/>
 </div>
   <!--===================================================-->
   <!--End page content-->
@@ -185,6 +185,9 @@ am4core2.useTheme(am4themes_animated);
 am4core2.useTheme(am4themes_dark);
 
 export default {
+  components: {
+    PopupAddServer
+  },
   data (){
     return {
       selectServer:"",
@@ -334,9 +337,9 @@ export default {
       ],
       sorting : -1,
       visibleModal :false,
-      srvUrl :// 'http://192.168.0.7:8080' // 창호
+      srvUrl : // 'http://192.168.0.7:8080' // 창호
         'http://52.79.220.131:8080' // 배포
-       // 'http://192.168.0.11:8080' // 우영
+        //'http://192.168.0.11:8080' // 우영
     }
 
   },
@@ -511,17 +514,19 @@ export default {
       chart.legend.position = "top";
     },
     addNewServer(){
-       
-      this.$modal.show(PopupAddServer,{
-          hot_table : 'data',
-          modal : this.$modal },{
-          title: 'Server 추가',
-          name: 'dynamic-modal',
-          width : '300px',
-          height : '335px',
-          borderRadius : '8px',
-          draggable: true,        
-      });
+
+      // this.$modal.show(PopupAddServer,{
+      //     title: 'Server 추가',
+      //     name: 'modals-container',
+      //     width : '300px',
+      //     height : '335px',
+      //     borderRadius : '8px',
+      //     draggable: true        
+      // });
+
+      // console.log("modal");
+      this.$modal.show('popup-add-server');
+
     },
     AddOneServer(param){
       this.serverList.push(param);
@@ -551,7 +556,7 @@ export default {
       }      
     },
     todo(){      
-        var test = setInterval(function (){ this.checkHealth() }.bind(this), 30000);
+        var test = setInterval(function (){ this.checkHealth() }.bind(this), 3000);
     },
     checkHealth(){
       this.$http.get(this.srvUrl+`/api/v1/management/servertime`)
@@ -590,7 +595,8 @@ export default {
     // this.$http.get(`${baseURI}/api/v1/management/logcount`)
     this.$http.get(`${baseURI}/api/v1/management/servertime`)
     .then((result) => {
-        console.log(result);
+        
+        console.log("777777 "+result);
         this.serverList = result.data;
         this.serverList = this.serverList.slice(0).sort((a, b) => a.lastTime < b.lastTime ? this.sorting : -this.sorting );
         // askForPermissioToReceiveNotifications();
